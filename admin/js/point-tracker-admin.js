@@ -833,14 +833,4 @@ jQuery(function($)
       delay : 250
     }
   });
-
-  /**
-   * Event handlers $('#participant-log').change(get_participant_log);
-   * $('#add-activity-link').click(function(){$('#add-participant-activity').toggle(300);});
-   * $('#save-participant-activity').click(save_participant_activity);
-   * $('#add-challenge-participant').click(function(){$('#admin-add-participant').toggle(300);});
-   * $('#admin-add-participants-button').click(add_participant);
-   * $('#clear-participants').click(clear_participants);
-   */
-
 });

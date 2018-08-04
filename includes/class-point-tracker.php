@@ -130,14 +130,6 @@ class Point_Tracker
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/constants.php';
 
         /**
-         * Class files used in plugin
-         */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/plugin-classes/Challenge.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/plugin-classes/Activity.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/plugin-classes/Participant.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/plugin-classes/Entry.php';
-
-        /**
          * All AJAX functions
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/ajax/challenge-ajax.php';
