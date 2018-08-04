@@ -1,0 +1,291 @@
+<?php
+
+/**
+ * The file that defines the core plugin class
+ *
+ * A class definition that includes attributes and functions used across both the
+ * public-facing side of the site and the admin area.
+ *
+ * @link       https://github.com/godsgood33
+ * @since      1.0.0
+ *
+ * @package    Point_Tracker
+ * @subpackage Point_Tracker/includes
+ */
+
+/**
+ * The core plugin class.
+ *
+ * This is used to define internationalization, admin-specific hooks, and
+ * public-facing site hooks.
+ *
+ * Also maintains the unique identifier of this plugin as well as the current
+ * version of the plugin.
+ *
+ * @since 1.0.0
+ * @package Point_Tracker
+ * @subpackage Point_Tracker/includes
+ * @author Ryan Prather <godsgood33@gmail.com>
+ */
+class Point_Tracker
+{
+
+    /**
+     * The loader that's responsible for maintaining and registering all hooks that power
+     * the plugin.
+     *
+     * @since 1.0.0
+     * @access protected
+     * @var Point_Tracker_Loader $loader Maintains and registers all hooks for the plugin.
+     */
+    protected $loader;
+
+    /**
+     * The unique identifier of this plugin.
+     *
+     * @since 1.0.0
+     * @access protected
+     * @var string $plugin_name The string used to uniquely identify this plugin.
+     */
+    protected $plugin_name;
+
+    /**
+     * The current version of the plugin.
+     *
+     * @since 1.0.0
+     * @access protected
+     * @var string $version The current version of the plugin.
+     */
+    protected $version;
+
+    /**
+     * Define the core functionality of the plugin.
+     *
+     * Set the plugin name and the plugin version that can be used throughout the plugin.
+     * Load the dependencies, define the locale, and set the hooks for the admin area and
+     * the public-facing side of the site.
+     *
+     * @since 1.0.0
+     */
+    public function __construct()
+    {
+        if (defined('PLUGIN_NAME_VERSION')) {
+            $this->version = PLUGIN_NAME_VERSION;
+        } else {
+            $this->version = '2.1.0';
+        }
+        $this->plugin_name = 'point-tracker';
+
+        $this->load_dependencies();
+        $this->set_locale();
+        $this->define_admin_hooks();
+        $this->define_public_hooks();
+    }
+
+    /**
+     * Load the required dependencies for this plugin.
+     *
+     * Include the following files that make up the plugin:
+     *
+     * - Point_Tracker_Loader. Orchestrates the hooks of the plugin.
+     * - Point_Tracker_i18n. Defines internationalization functionality.
+     * - Point_Tracker_Admin. Defines all hooks for the admin area.
+     * - Point_Tracker_Public. Defines all hooks for the public side of the site.
+     *
+     * Create an instance of the loader which will be used to register the hooks
+     * with WordPress.
+     *
+     * @since 1.0.0
+     * @access private
+     */
+    private function load_dependencies()
+    {
+
+        /**
+         * The class responsible for orchestrating the actions and filters of the
+         * core plugin.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-point-tracker-loader.php';
+
+        /**
+         * The class responsible for defining internationalization functionality
+         * of the plugin.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-point-tracker-i18n.php';
+
+        /**
+         * The class responsible for defining all actions that occur in the admin area.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-point-tracker-admin.php';
+
+        /**
+         * The class responsible for defining all actions that occur in the public-facing
+         * side of the site.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-point-tracker-public.php';
+
+        /**
+         * Constants
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/constants.php';
+
+        /**
+         * Class files used in plugin
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/plugin-classes/Challenge.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/plugin-classes/Activity.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/plugin-classes/Participant.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/plugin-classes/Entry.php';
+
+        /**
+         * All AJAX functions
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/ajax/challenge-ajax.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/ajax/activity-ajax.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/ajax/participant-ajax.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/ajax/entry-ajax.php';
+
+        /**
+         * @var Point_Tracker $loader
+         */
+        $this->loader = new Point_Tracker_Loader();
+    }
+
+    /**
+     * Define the locale for this plugin for internationalization.
+     *
+     * Uses the Point_Tracker_i18n class in order to set the domain and to register the hook
+     * with WordPress.
+     *
+     * @since 1.0.0
+     * @access private
+     */
+    private function set_locale()
+    {
+        $plugin_i18n = new Point_Tracker_i18n();
+
+        $this->loader->add_action('plugins_loaded', $plugin_i18n, 'load_plugin_textdomain');
+    }
+
+    /**
+     * Register all of the hooks related to the admin area functionality
+     * of the plugin.
+     *
+     * @since 1.0.0
+     * @access private
+     */
+    private function define_admin_hooks()
+    {
+        $plugin_admin = new Point_Tracker_Admin($this->get_plugin_name(), $this->get_version());
+
+        $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
+        $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
+
+        $this->loader->add_action('admin_menu', $plugin_admin, 'add_plugin_admin_menu');
+    }
+
+    /**
+     * Register all of the hooks related to the public-facing functionality
+     * of the plugin.
+     *
+     * @since 1.0.0
+     * @access private
+     */
+    private function define_public_hooks()
+    {
+        $plugin_public = new Point_Tracker_Public($this->get_plugin_name(), $this->get_version());
+
+        $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
+        $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
+    }
+
+    /**
+     * Run the loader to execute all of the hooks with WordPress.
+     *
+     * @since 1.0.0
+     */
+    public function run()
+    {
+        $this->loader->run();
+    }
+
+    /**
+     * The name of the plugin used to uniquely identify it within the context of
+     * WordPress and to define internationalization functionality.
+     *
+     * @since 1.0.0
+     * @return string The name of the plugin.
+     */
+    public function get_plugin_name()
+    {
+        return $this->plugin_name;
+    }
+
+    /**
+     * The reference to the class that orchestrates the hooks with the plugin.
+     *
+     * @since 1.0.0
+     * @return Point_Tracker_Loader Orchestrates the hooks of the plugin.
+     */
+    public function get_loader()
+    {
+        return $this->loader;
+    }
+
+    /**
+     * Retrieve the version number of the plugin.
+     *
+     * @since 1.0.0
+     * @return string The version number of the plugin.
+     */
+    public function get_version()
+    {
+        return $this->version;
+    }
+
+    /**
+     * Function to see if the current user is a participant in the challenge
+     *
+     * @global wpdb $wpdb
+     *
+     * @param int|string $challenge_id
+     * @param int $user_id
+     *
+     * @return boolean
+     */
+    public static function is_user_in_challenge($challenge_id, $user_id)
+    {
+        global $wpdb;
+
+        $query = $wpdb->prepare("SELECT COUNT(1)
+FROM {$wpdb->prefix}pt_challenges c
+JOIN {$wpdb->prefix}pt_participants cp ON cp.challenge_id = c.id
+WHERE " . (is_numeric($challenge_id) ? "c.id = %d" : "c.short_link = %s") . " AND
+    cp.`user_id`=%d", $challenge_id, $user_id);
+
+        return (boolean) $wpdb->get_var($query);
+    }
+
+    /**
+     * Function to determine if a user is approved in a particular challenge
+     *
+     * @global wpdb $wpdb
+     *
+     * @param int $chal_id
+     * @param int $user_id
+     *
+     * @return boolean
+     */
+    public static function is_participant_approved($chal_id, $user_id)
+    {
+        global $wpdb;
+
+        $query = $wpdb->prepare("SELECT IF(!c.approval,'1',cp.approved)
+FROM {$wpdb->prefix}pt_challenges c
+JOIN {$wpdb->prefix}pt_participants cp ON cp.challenge_id=c.id
+WHERE " . (is_numeric($chal_id) ? "cp.challenge_id = %d" : "c.short_link = %s") . " AND
+    cp.user_id = %d", $chal_id, $user_id);
+
+        return (boolean) $wpdb->get_var($query);
+    }
+}

@@ -1,0 +1,87 @@
+/**
+ * All of the CSS for your public-facing functionality should be
+ * included in this file.
+ */
+.activity {
+	margin: 10px;
+	border-bottom: solid 2px black;
+}
+
+.activity:last-child {
+	border-bottom: none;
+}
+
+#msg {
+	background-color: #0f0;
+	color: #fff;
+	border: solid 2px #008000;
+	font-weight: bolder;
+	display: table;
+	z-index: 99;
+	position: absolute;
+	width: 45%;
+}
+
+#msg p {
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.err-msg {
+	background-color: #f00 !important;
+	border: solid 2px #800000 !important;
+}
+
+.warn-msg {
+	background-color: #ff0 !important;
+	border: solid 2px #000 !important;
+	color: #000 !important;
+}
+
+.question-container {
+	width: 86%;
+	display: inline-block;
+}
+
+.save-container {
+	width: 13%;
+	display: inline-block;
+}
+
+#waiting {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	background: #000;
+	opacity: 0.0;
+	filter: alpha(opacity = 0);
+	z-index: 1000;
+	display: none;
+}
+
+#loading {
+	display: none;
+}
+
+.fa-trash-alt {
+	color: red !important;
+	cursor: pointer;
+}
+
+#tp {
+	width: 70%;
+	text-align: center;
+	display: inline-block;
+	font-weight: 600;
+}
+
+.odd {
+	filter: brightness(90%);
+}
+
+.even {
+	
+}
