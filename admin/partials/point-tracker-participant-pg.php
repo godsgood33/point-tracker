@@ -17,11 +17,13 @@ $challenges = $wpdb->get_results($query) or [];
 
 ?>
 
-<h2>Participant Tracker</h2>
+<h2>Participant List</h2>
 
 <div id='msg'></div>
 <div id='waiting'></div>
 <div id='loading'></div>
+
+<input type='hidden' id='_wpnonce' value='<?php print wp_create_nonce('pt-delete-participant'); ?>' />
 
 Challenge Name:
 <select id='challenge_participants'>

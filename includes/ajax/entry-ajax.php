@@ -474,7 +474,7 @@ function pt_delete_participant_activity()
 {
     global $wpdb;
 
-    if(!check_ajax_referer('pt-delete-activity', 'security', false)) {
+    if(!check_ajax_referer('pt-delete-entry', 'security', false)) {
         print json_encode([
             'error' => 'We were unable to verify the nonce'
         ]);

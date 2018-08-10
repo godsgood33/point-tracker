@@ -22,6 +22,8 @@ $challenges = $wpdb->get_results($query) or [];
 <div id='waiting'></div>
 <div id='loading'></div>
 
+<input type='hidden' id='_wpnonce' value='<?php print wp_create_nonce('pt-delete-activity'); ?>' />
+
 Challenge Name:
 <select id='challenge_activities'>
 	<option value=''>-- Select Challenge --</option>

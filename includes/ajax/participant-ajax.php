@@ -142,6 +142,13 @@ function pt_remove_participant()
         wp_die();
     }
 
+    if(!check_ajax_referer('pt-delete-participant', 'security', false)) {
+        print json_encode([
+            'error' => 'We were unable to verify the nonce'
+        ]);
+        wp_die();
+    }
+
     $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
     $user_id = filter_input(INPUT_POST, 'user-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
     $email = $wpdb->get_var($wpdb->prepare("SELECT email FROM {$wpdb->prefix}pt_participants WHERE user_id = %d AND challenge_id = %d", $user_id, $chal_id));

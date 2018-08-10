@@ -123,6 +123,13 @@ function pt_delete_challenge()
         wp_die();
     }
 
+    if(!check_ajax_referer('pt-delete-challenge', 'security', false)) {
+        print json_encode([
+            'error' => 'We were unable to verify the nonce'
+        ]);
+        wp_die();
+    }
+
     $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
 
     $wpdb->delete("{$wpdb->prefix}pt_challenges", [

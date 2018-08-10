@@ -41,7 +41,7 @@ ORDER BY
     $my_act = $wpdb->get_results($query);
     ?>
 
-<input type='hidden' id='_wpnonce' value='<?php print wp_create_nonce('pt-delete-activity'); ?>' />
+<input type='hidden' id='_wpnonce' value='<?php print wp_create_nonce('pt-delete-entry'); ?>' />
 <input type='hidden' id='chal' value='<?php print $chal->short_link; ?>' />
 <div id='left-half'>
 	<table id='my-activity-table' class="stripe">
@@ -78,7 +78,7 @@ EOR;
 } else {
     ?>
 <div id='left-half'>
-	<input type='hidden' id='_wpnonce' value='<?php print wp_create_nonce('pt-delete-activity'); ?>' />
+	<input type='hidden' id='_wpnonce' value='<?php print wp_create_nonce('pt-delete-entry'); ?>' />
 	<input type='hidden' id='chal' value='<?php print $chal->short_link; ?>' />
 	<input type='text' id='member-id' placeholder='Member ID...'
 		title='Enter your member ID EXACTLY as you first entered it' /><br />

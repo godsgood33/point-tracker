@@ -43,5 +43,5 @@ Challenge Name:
   <input type='button' id='save-participant-activity' value='Save' />
 </div>
 
-<input type='hidden' id='_wpnonce' value='<?php print wp_create_nonce('pt-delete-activity'); ?>' />
+<input type='hidden' id='_wpnonce' value='<?php print wp_create_nonce('pt-delete-entry'); ?>' />
 <table id='participant-log-table'></table>

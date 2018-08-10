@@ -195,6 +195,20 @@ function pt_delete_activity()
 {
     global $wpdb;
 
+    if (! current_user_can('manage_options')) {
+        print json_encode([
+            'error' => 'Access Denied'
+        ]);
+        wp_die();
+    }
+
+    if(!check_ajax_referer('pt-delete-activity', 'security', false)) {
+        print json_encode([
+            'error' => 'We were unable to verify the nonce'
+        ]);
+        wp_die();
+    }
+
     $act_id = filter_input(INPUT_POST, 'act-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
 
     $res = $wpdb->delete("{$wpdb->prefix}pt_activities", [
