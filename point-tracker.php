@@ -15,7 +15,7 @@
  * @wordpress-plugin
  * Plugin Name:       Point Tracker
  * Plugin URI:        https://github.com/godsgood33/point-tracker
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Description:       Allow network marketing leaders to create challenges and let people track their points.
  * Version:           2.1.0
  * Author:            Ryan Prather
  * Author URI:        https://github.com/godsgood33

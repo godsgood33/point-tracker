@@ -48,6 +48,7 @@ ORDER BY al.log_date,al.log_time";
         foreach ($log_res as $log) {
             $dt = new DateTime($log->log_date . " " . $log->log_time);
             $_data[] = [
+                'id' => $log->member_id,
                 'name' => $log->name,
                 'activity' => $log->question,
                 'points' => $log->points,
@@ -61,6 +62,11 @@ ORDER BY al.log_date,al.log_time";
     print json_encode([
         'data' => $_data,
         'columns' => [
+            [
+                'title' => 'ID',
+                'defaultContent' => '',
+                'data' => 'id'
+            ],
             [
                 'title' => 'Name',
                 'defaultContent' => '',

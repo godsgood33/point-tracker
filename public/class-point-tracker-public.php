@@ -131,7 +131,8 @@ class Point_Tracker_Public
             ], $this->version, false);
             wp_localize_script($this->plugin_name, 'ajax_object', [
                 'ajax_url' => admin_url('admin-ajax.php'),
-                'chal_page' => $chal_page->guid
+                'chal_page' => $chal_page->guid,
+                'date_format' => $this->php_to_js_date(get_option('date_format', 'm/d/Y'))
             ]);
             wp_enqueue_script($this->plugin_name . "-spin", plugin_dir_url(__DIR__) . "includes/spin/spin.min.js", [
                 'jquery'
@@ -151,6 +152,24 @@ class Point_Tracker_Public
             wp_enqueue_script('dt-scroller', plugin_dir_url(__DIR__) . "includes/datatables/Scroller-1.3.0/js/dataTables.scroller.min.js");
             wp_enqueue_script('dt-select', plugin_dir_url(__DIR__) . "includes/datatables/Select-1.0.1/js/dataTables.select.min.js");
         }
+    }
+
+    /**
+     * Function to return the equivelant date formatting string
+     *
+     * @return string
+     */
+    public function php_to_js_date($php_format)
+    {
+        // most common date formats listed in WordPress admin
+        $arr = [
+            "Y-m-d" => "yy-mm-dd",
+            "m/d/Y" => "mm/dd/yy",
+            "M j, Y" => "M d, yy",
+            "F j, Y" => "MMMM d, yy",
+            "d/m/Y" => "dd/mm/yy"
+        ];
+        return in_array($php_format, $arr) ? $arr["{$php_format}"] : "yy-mm-dd";
     }
 
     /**

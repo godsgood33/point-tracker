@@ -112,9 +112,12 @@ class Point_Tracker_Admin
          */
         $uri = filter_input(INPUT_GET, 'page', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
         if (preg_match("/point\-tracker/", $uri)) {
-            wp_enqueue_script($this->plugin_name . "-admin-core", plugin_dir_url(__FILE__) . "js/point-tracker-admin.min.js", [
+            wp_enqueue_script("{$this->plugin_name}-admin-core", plugin_dir_url(__FILE__) . "js/point-tracker-admin.min.js", [
                 'jquery'
             ], $this->version, false);
+            wp_localize_script("{$this->plugin_name}-admin-core", 'my_object', [
+                'date_format' => $this->php_to_js_date(get_option('date_format', "m/d/Y"))
+            ]);
 
             wp_enqueue_script('jquery-ui-core');
             wp_enqueue_script('jquery-ui-datepicker');
@@ -175,6 +178,24 @@ class Point_Tracker_Admin
             $this,
             "display_admin_options_page"
         ));
+    }
+
+    /**
+     * Function to return the equivelant date formatting string
+     *
+     * @return string
+     */
+    public function php_to_js_date($php_format)
+    {
+        // most common date formats listed in WordPress admin
+        $arr = [
+            "Y-m-d" => "yy-mm-dd",
+            "m/d/Y" => "mm/dd/yy",
+            "M j, Y" => "M d, yy",
+            "F j, Y" => "MMMM d, yy",
+            "d/m/Y" => "dd/mm/yy"
+        ];
+        return $arr["{$php_format}"];
     }
 
     /**

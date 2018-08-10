@@ -138,6 +138,7 @@ class Point_Tracker
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/ajax/entry-ajax.php';
 
         /**
+         *
          * @var Point_Tracker $loader
          */
         $this->loader = new Point_Tracker_Loader();
@@ -199,6 +200,78 @@ class Point_Tracker
     public function run()
     {
         $this->loader->run();
+    }
+
+    /**
+     * Function to initialize each page
+     *
+     * @global wpdb $wpdb
+     *
+     * @param string $chal_link
+     *
+     * @return stdClass
+     */
+    public static function init($chal_link)
+    {
+        global $wpdb;
+        $req_login = (boolean) get_option('pt-require-login', 0);
+        $now = new DateTime("now", new DateTimeZone(get_option('timezone_string')));
+
+        if (! $chal_link) {
+            wp_die("You must select a challenge to participate in", "NO_LINK", [
+                'response' => 301
+            ]);
+        }
+
+        $query = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_challenges WHERE `short_link`=%s", $chal_link);
+        $chal = $wpdb->get_row($query);
+
+        if (! $chal) {
+            wp_die("Could not find the challenge requested", "CHALLENGE_NOT_FOUND", [
+                'response' => 301
+            ]);
+        }
+
+        $start = new DateTime($chal->start, new DateTimeZone(get_option('timezone_string')));
+        $end = new DateTime($chal->end, new DateTimeZone(get_option('timezone_string')));
+        $end->setTime(23, 59, 59);
+
+        if ($now < $start) {
+            wp_die("Challenge hasn't started yet", "CHALLENGE_NOT_RUNNING", [
+                'response' => 301
+            ]);
+        } elseif ($now > $end) {
+            wp_die("Challenge is already over", "CHALLENGE_NOT_RUNNING", [
+                'response' => 301
+            ]);
+        }
+
+        if ($req_login && ! is_user_logged_in()) {
+            wp_die("Web site settings required that you <a href='" . wp_login_url() . "'>login</a> to participate in a challenge", "ACCOUNT_REQUIRED", [
+                'response' => 301
+            ]);
+        } elseif ($chal->approval && ! is_user_logged_in()) {
+            wp_die("Challenge requires approval so you must <a href='" . wp_login_url() . "'>login</a> on this website", "ACCOUNT_REQUIRED", [
+                'response' => 301
+            ]);
+        }
+
+        return $chal;
+    }
+
+    /**
+     * Function to print necessary content on the page to allow the user to join the challenge
+     *
+     * @param stdClass $chal
+     */
+    public static function join_challenge(&$chal)
+    {
+        $desc = stripcslashes(nl2br($chal->desc));
+        print <<<EOL
+<h3>{$chal->name}</h3>
+<p>{$desc}</p>
+<input type='button' id='join-challenge' value='Join Challenge' />
+EOL;
     }
 
     /**

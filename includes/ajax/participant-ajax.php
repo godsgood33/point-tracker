@@ -4,6 +4,7 @@ add_action('wp_ajax_approve-participant', 'pt_approve_participant');
 add_action('wp_ajax_remove-participant', 'pt_remove_participant');
 add_action('wp_ajax_add-participant', 'pt_add_participant');
 add_action('wp_ajax_join-challenge', 'pt_join_challenge');
+add_action('wp_ajax_clear-participants', 'pt_clear_participants');
 
 /**
  * Function to get all the challenge participants
@@ -316,7 +317,8 @@ function pt_join_challenge()
     }
 
     print json_encode($res ? [
-        'success' => ($chal->approval ? "Requested to join" : "Joined challenge")
+        'success' => ($chal->approval ? "Requested to join" : "Joined challenge"),
+        'redirect' => !$chal->approval
     ] : [
         'error' => 'Unknown error'
     ]);
@@ -324,3 +326,28 @@ function pt_join_challenge()
     wp_die();
 }
 
+/**
+ * Function to remove all participants and log from a challenge
+ *
+ * @global wpdb $wpdb
+ */
+function pt_clear_participants()
+{
+    global $wpdb;
+    $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+
+    $query = $wpdb->prepare("DELETE l.* FROM {$wpdb->prefix}pt_log l JOIN {$wpdb->prefix}pt_participants p ON p.user_id = l.user_id WHERE p.challenge_id = %d", $chal_id);
+    $res = $wpdb->query($query);
+
+    if($res) {
+        $query = $wpdb->prepare("DELETE FROM {$wpdb->prefix}pt_participants WHERE challenge_id = %d", $chal_id);
+        $res = $wpdb->query($query);
+    }
+
+    print json_encode($res ? [
+        'success' => "Deleted participants from challenge"
+    ] : [
+        'error' => $wpdb->last_error
+    ]);
+    wp_die();
+}

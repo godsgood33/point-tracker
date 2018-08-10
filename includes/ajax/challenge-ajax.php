@@ -28,8 +28,8 @@ function pt_get_challenge()
     $start = new DateTime($chal->start);
     $end = new DateTime($chal->end);
 
-    $chal->start = $start->format(get_option('date_format', 'M/j/Y'));
-    $chal->end = $end->format(get_option('date_format', 'M/j/Y'));
+    $chal->start = $start->format(get_option('date_format', 'm/d/Y'));
+    $chal->end = $end->format(get_option('date_format', 'm/d/Y'));
     $chal->desc = stripcslashes($chal->desc);
     $chal->act_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(1) FROM `{$wpdb->prefix}pt_activities` WHERE challenge_id=%d", $chal_id));
     $chal->part_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(1) FROM `{$wpdb->prefix}pt_participants` WHERE challenge_id=%d", $chal_id));

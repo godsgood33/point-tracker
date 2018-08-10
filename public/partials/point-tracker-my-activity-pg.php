@@ -13,35 +13,11 @@
 global $wpdb;
 
 $chal_link = filter_input(INPUT_GET, 'chal', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
-if (! $chal_link) {
-    wp_die("You need to select a challenge to get", "Damnit Jim, I'm a doctor, not a mindreader", [
-        'response' => 301
-    ]);
-}
-$query = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_challenges WHERE short_link=%s", $chal_link);
-$chal = $wpdb->get_row($query);
-
-if(!$chal) {
-    wp_die("Could not find that challenge, please check your link", "Damnit Jim, I'm a doctor, not a mindreader", [
-        'response' => 301
-    ]);
-}
-
-$now = new DateTime("now", new DateTimeZone(get_option('timezone_string')));
-$start = new DateTime($chal->start, new DateTimeZone(get_option('timezone_string')));
-$end = new DateTime($chal->end, new DateTimeZone(get_option('timezone_string')));
-$end->setTime(23, 59, 59);
-
-if ($now < $start) {
-    wp_die("Challenge hasn't started yet", "Where we're going we don't need roads", [
-        'response' => 301
-    ]);
-} elseif ($now > $end) {
-    wp_die("Challenge is over", "You need a time machine", [
-        'response' => 301
-    ]);
-}
+$chal = Point_Tracker::init($chal_link);
 ?>
+
+<h2><?php print $chal->name; ?></h2>
+<small><?php print $chal->desc; ?></small>
 
 <div id='msg'></div>
 <div id='waiting'></div>
@@ -50,16 +26,6 @@ if ($now < $start) {
 
 if (is_user_logged_in()) {
     $user = wp_get_current_user();
-
-    if (! Point_Tracker::is_user_in_challenge($chal_link, $user->ID)) {
-        wp_die("You are not a participant in that challenge", "You shall not pass", array(
-            'response' => 301
-        ));
-    } elseif (! Point_Tracker::is_participant_approved($chal_link, $user->ID)) {
-        wp_die("You are in the challenge, but not approved at the moment", "I don't know you", array(
-            'response' => 301
-        ));
-    }
 
     $query = $wpdb->prepare("SELECT
     ca.*,al.*
@@ -76,6 +42,7 @@ ORDER BY
     ?>
 
 <input type='hidden' id='_wpnonce' value='<?php print wp_create_nonce('pt-delete-activity'); ?>' />
+<input type='hidden' id='chal' value='<?php print $chal->short_link; ?>' />
 <div id='left-half'>
 	<table id='my-activity-table' class="stripe">
 		<thead>
@@ -112,7 +79,7 @@ EOR;
     ?>
 <div id='left-half'>
 	<input type='hidden' id='_wpnonce' value='<?php print wp_create_nonce('pt-delete-activity'); ?>' />
-	<input type='hidden' id='chal-id' value='<?php print $chal->id; ?>' />
+	<input type='hidden' id='chal' value='<?php print $chal->short_link; ?>' />
 	<input type='text' id='member-id' placeholder='Member ID...'
 		title='Enter your member ID EXACTLY as you first entered it' /><br />
 	<input type='text' id='email' placeholder='Email...'
