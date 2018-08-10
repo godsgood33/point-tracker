@@ -157,6 +157,15 @@ function pt_save_activity()
         wp_die();
     }
 
+    $query = $wpdb->prepare("SELECT COUNT(1) FROM {$wpdb->prefix}pt_activities WHERE name = %s AND challenge_id = %d", $name, $chal_id);
+    $count = $wpdb->get_var($query);
+    if($count) {
+        print json_encode([
+            'error' => 'Invalid name value (cannot duplicate a name in this challenge)'
+        ]);
+        wp_die();
+    }
+
     if ($act_id) {
         $id = $act_id;
         if ($wpdb->update("{$wpdb->prefix}pt_activities", $params, [

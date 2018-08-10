@@ -1,10 +1,10 @@
 # Point Tracker
 
-This plugin is essential a form builder, but for challenges and contests.  After installation, a site admin needs to create a challenge inserting a name, start and end dates, a description, and decide if they want to require users to be approved.
+This plugin is essentially a form builder, but for challenges and contests.  After installation, a site admin needs to create a challenge inserting a name, start and end dates, a description, and decide if they want to require users to be approved (which requires site account).
 
 There is a global option under Settings -> PT Settings for requiring the participants be logged into an account before they are allowed to access any of the challenge pages.
 
-Once saved, the admin then navigates to the Activities admin menu and after selecting the challenge they just created, they add activities they want the participants to complete.  The following fields are allowed:
+Once saved, the admin then navigates to the Point Tracker -> Activities admin menu and after selecting the challenge they just created, they add activities they want the participants to complete.  The following fields are allowed:
 
 - Type (checkbox, text, radio, number)
 - Name (short name not displayed)

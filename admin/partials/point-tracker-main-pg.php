@@ -32,7 +32,8 @@ $challenges = $wpdb->get_results($query) or [];
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
 <h2>Point Tracker</h2>
 <div id='msg'></div>
-<input type='hidden' id='_wpnonce' value='<?php print wp_create_nonce('pt-delete-challenge'); ?>' />
+<input type='hidden' id='_wpnonce'
+	value='<?php print wp_create_nonce('pt-delete-challenge'); ?>' />
 <input type='button' id='save-challenge' value='Save' />
 &nbsp;&nbsp;
 <input type='button' id='delete-challenge' value='Delete' />
