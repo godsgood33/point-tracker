@@ -36,7 +36,7 @@ Challenge Name:
 	<div class='onethird'>
     	<label for='act-type'>Type:</label>
     	<select id='act-type' class='act-type tooltip-field' title='What type of activity is this?'>
-    		<option>-- Type --</option>
+    		<option value=''>-- Type --</option>
     		<option value='checkbox'>Checkbox</option>
     		<option value='number'>Number</option>
     		<option value='radio'>Radio</option>
@@ -47,10 +47,10 @@ Challenge Name:
     	<input type='text' class='act-name tooltip-field' id='act-name' max='10' placeholder='Name...' title='Short name for the activity (max 10 characters)' /><br />
 
     	<label for='pts'>Points:</label>
-    	<input type='text' class='act-pts tooltip-field' id='act-pts' placeholder='1' title='Point value for each amount of the entry' /><br />
+    	<input type='text' class='act-pts tooltip-field' id='act-pts' value='0' title='Point value for each amount of the entry' /><br />
 
     	<label for='chal-max'>Max Allowed:</label>
-    	<input type='text' class='act-chal-max tooltip-field' id='act-chal-max' title='Numeric value of the maximum amount points allowed during the whole challenge' /><br />
+    	<input type='text' class='act-chal-max tooltip-field' id='act-chal-max' value='0' title='Numeric value of the maximum amount points allowed during the whole challenge' /><br />
 	</div>
 
 	<div class='onethird'>
@@ -61,7 +61,7 @@ Challenge Name:
 		<input type='text' class='act-desc tooltip-field' id='act-desc' placeholder='Desc...' title='Long description explaining any limitations, restrictions, or allowances for this activity' /><br />
 
 		<label for='order'>Order:</label>
-		<input type='text' class='act-order tooltip-field' id='act-order' value='' placeholder='Order...' title='What order do you want this displayed on the page' /><br />
+		<input type='text' class='act-order tooltip-field' id='act-order' value='0' placeholder='Order...' title='What order do you want this displayed on the page' /><br />
 	</div>
 
 	<div class='onethird'>
