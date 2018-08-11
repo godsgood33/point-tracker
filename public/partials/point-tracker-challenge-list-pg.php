@@ -10,26 +10,28 @@ $chal_page = get_page_by_title("Challenge");
 $chal_link = filter_input(INPUT_GET, 'chal', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
 $user = null;
 
-$chal = Point_Tracker::init($chal_link);
+$chal = Point_Tracker::init($chal_link, true);
 
 if (is_user_logged_in()) {
     $query = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_participants WHERE user_id = %d", get_current_user_id());
     $user = $wpdb->get_row($query);
 
-    if (! Point_Tracker::is_user_in_challenge($chal->id, $user->user_id)) {
-        // allow user to join
-        Point_Tracker::join_challenge($chal);
-    } elseif (! Point_Tracker::is_participant_approved($chal->id, $user->user_id)) {
-        wp_die("You are not current approved for this challenge", "NOT_APPROVED", [
-            'response' => 301
-        ]);
-    } else {
-        $desc = stripcslashes(nl2br($chal->desc));
-        print <<<EOL
-<h3>{$chal->name}</h3>
-<p>{$desc}</p>
-<a href='{$chal_page->guid}?chal={$chal->short_link}'>Go to Challenge</a>
+    if($chal) {
+        if (! $user || ! Point_Tracker::is_user_in_challenge($chal->id, $user->user_id)) {
+            // allow user to join
+            Point_Tracker::join_challenge($chal);
+        } elseif (! Point_Tracker::is_participant_approved($chal->id, $user->user_id)) {
+            wp_die("You are not current approved for this challenge", "NOT_APPROVED", [
+                'response' => 301
+            ]);
+        } else {
+            $desc = stripcslashes(nl2br($chal->desc));
+            print <<<EOL
+    <h3>{$chal->name}</h3>
+    <p>{$desc}</p>
+    <a href='{$chal_page->guid}?chal={$chal->short_link}'>Go to Challenge</a>
 EOL;
+        }
     }
 } else {
     wp_die("Viewing your current challenges requires you to <a href='" . wp_login_url() . "'>login</a>", "ACCOUNT_REQUIRED", [

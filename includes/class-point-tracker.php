@@ -211,11 +211,15 @@ class Point_Tracker
      *
      * @return stdClass
      */
-    public static function init($chal_link)
+    public static function init($chal_link, $list = false)
     {
         global $wpdb;
         $req_login = (boolean) get_option('pt-require-login', 0);
         $now = new DateTime("now", new DateTimeZone(get_option('timezone_string')));
+
+        if($list && !$chal_link) {
+            return null;
+        }
 
         if (! $chal_link) {
             wp_die("You must select a challenge to participate in", "NO_LINK", [

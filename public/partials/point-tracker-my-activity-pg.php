@@ -47,7 +47,7 @@ ORDER BY
 	<table id='my-activity-table' class="stripe">
 		<thead>
 			<tr>
-				<th>Name</th>
+				<th>Question</th>
 				<th>Points</th>
 				<th>Date</th>
 				<th>Time</th>

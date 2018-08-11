@@ -81,7 +81,7 @@ function pt_save_challenge()
         'start' => $start_dt->format("Y-m-d"),
         'end' => $end_dt->format("Y-m-d"),
         'approval' => (boolean) filter_input(INPUT_POST, 'approval', FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE),
-        'desc' => sanatize_text_field(filter_input(INPUT_POST, 'desc', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE))
+        'desc' => filter_input(INPUT_POST, 'desc', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE)
     ];
     if ($chal_id) {
         $res = $wpdb->update("{$wpdb->prefix}pt_challenges", $params, [

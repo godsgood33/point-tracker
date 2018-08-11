@@ -52,7 +52,7 @@ ORDER BY al.log_date,al.log_time";
                 'name' => $log->name,
                 'activity' => $log->question,
                 'points' => $log->points,
-                'dt' => $dt->format("Y-m-d"),
+                'dt' => $dt->format(get_option('date_format', 'm/d/Y')),
                 'answer' => $log->value,
                 'action' => "<i class='far fa-trash-alt' title='Delete this activity so you can reinput with the correct info' data-act-id='{$log->activity_id}' data-log-date='{$dt->format("Y-m-d")}' data-user-id='{$log->user_id}'></i>"
             ];
@@ -83,7 +83,7 @@ ORDER BY al.log_date,al.log_time";
                 'data' => 'points'
             ],
             [
-                'title' => 'Date/Time',
+                'title' => 'Date',
                 'defaultContent' => '',
                 'data' => 'dt'
             ],
