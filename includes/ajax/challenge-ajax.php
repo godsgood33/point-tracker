@@ -61,15 +61,27 @@ function pt_save_challenge()
     $req_end_date = filter_input(INPUT_POST, 'end-date', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
 
     $start_dt = new DateTime($req_start_date, new DateTimeZone(get_option('timezone_string')));
+    if(!is_a($start_dt, 'DateTime')) {
+        print json_encode([
+            'error' => 'Not a valid start date'
+        ]);
+        wp_die();
+    }
     $end_dt = new DateTime($req_end_date, new DateTimeZone(get_option('timezone_string')));
+    if(!is_a($end_dt, 'DateTime')) {
+        print json_encode([
+            'error' => 'Not a valid end date'
+        ]);
+        wp_die();
+    }
     $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
 
     $params = [
         'name' => filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE),
-        'start' => (is_a($start_dt, 'DateTime') ? $start_dt->format("Y-m-d") : null),
-        'end' => (is_a($end_dt, 'DateTime') ? $end_dt->format("Y-m-d") : null),
+        'start' => $start_dt->format("Y-m-d"),
+        'end' => $end_dt->format("Y-m-d"),
         'approval' => (boolean) filter_input(INPUT_POST, 'approval', FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE),
-        'desc' => filter_input(INPUT_POST, 'desc', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE)
+        'desc' => sanatize_text_field(filter_input(INPUT_POST, 'desc', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE))
     ];
     if ($chal_id) {
         $res = $wpdb->update("{$wpdb->prefix}pt_challenges", $params, [
@@ -92,7 +104,8 @@ function pt_save_challenge()
         }
     }
 
-    $link = isset($params['short_link']) ? $params['short_link'] : $wpdb->get_var($wpdb->prepare("SELECT short_link FROM {$wpdb->prefix}pt_challenges WHERE id=%d", $chal_id));
+    $query = $wpdb->prepare("SELECT short_link FROM {$wpdb->prefix}pt_challenges WHERE id = %d", $chal_id);
+    $link = isset($params['short_link']) ? $params['short_link'] : $wpdb->get_var($query);
 
     print json_encode($res === false ? [
         'error' => 'Update failed'
