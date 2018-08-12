@@ -195,7 +195,7 @@ class Point_Tracker_Admin
             "F j, Y" => "MMMM d, yy",
             "d/m/Y" => "dd/mm/yy"
         ];
-        return $arr["{$php_format}"];
+        return isset($arr["{$php_format}"]) ? $arr["{$php_format}"] : "Y-m-d";
     }
 
     /**

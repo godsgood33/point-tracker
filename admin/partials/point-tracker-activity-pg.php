@@ -37,7 +37,8 @@ Challenge Name:
 	<input type='hidden' id='t-row' />
 	<input type='hidden' id='act-id' />
 	<div class='onethird'>
-		<label for='act-type'>Type:</label> <select id='act-type'
+		<label for='act-type'>Type:</label>
+		<select id='act-type'
 			class='act-type tooltip-field' title='What type of activity is this?'>
 			<option value=''>-- Type --</option>
 			<option value='checkbox'>Checkbox</option>
@@ -45,12 +46,14 @@ Challenge Name:
 			<option value='radio'>Radio</option>
 			<option value='text'>Text</option>
 		</select><br />
+
 		<label for='name'>Name:</label>
 		<input type='text'
 			class='act-name tooltip-field' id='act-name' maxlength='10'
 			style='text-transform:lowercase;' pattern='[a-z]*'
 			placeholder='Name...'
 			title='Short name for the activity (max 10 characters), not seen by the participant' /><br />
+
 		<label for='pts'>Points:</label>
 		<input type='text'
 			class='act-pts tooltip-field' id='act-pts' value='0'
