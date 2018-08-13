@@ -22,17 +22,25 @@ function pt_get_challenge()
     }
 
     $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-    $query = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_challenges WHERE id=%d", $chal_id);
+    $query = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_challenges WHERE id = %d", $chal_id);
     $chal = $wpdb->get_row($query);
+
+    if(!$chal) {
+        print json_encode([
+            'error' => 'Unable to find the challenge selected'
+        ]);
+        wp_die();
+    }
 
     $start = new DateTime($chal->start);
     $end = new DateTime($chal->end);
 
+    $chal->name = html_entity_decode($chal->name, ENT_QUOTES | ENT_HTML5);
     $chal->start = $start->format(get_option('date_format', 'm/d/Y'));
     $chal->end = $end->format(get_option('date_format', 'm/d/Y'));
-    $chal->desc = stripcslashes($chal->desc);
-    $chal->act_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(1) FROM `{$wpdb->prefix}pt_activities` WHERE challenge_id=%d", $chal_id));
-    $chal->part_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(1) FROM `{$wpdb->prefix}pt_participants` WHERE challenge_id=%d", $chal_id));
+    $chal->desc = html_entity_decode(stripcslashes($chal->desc), ENT_QUOTES | ENT_HTML5);
+    $chal->act_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(1) FROM {$wpdb->prefix}pt_activities WHERE challenge_id=%d", $chal_id));
+    $chal->part_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(1) FROM {$wpdb->prefix}pt_participants WHERE challenge_id=%d", $chal_id));
 
     print json_encode($chal);
 
@@ -75,13 +83,14 @@ function pt_save_challenge()
         wp_die();
     }
     $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+    $name = sanitize_text_field(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE));
 
     $params = [
-        'name' => filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE),
+        'name' => $name,
         'start' => $start_dt->format("Y-m-d"),
         'end' => $end_dt->format("Y-m-d"),
         'approval' => (boolean) filter_input(INPUT_POST, 'approval', FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE),
-        'desc' => filter_input(INPUT_POST, 'desc', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE)
+        'desc' => sanitize_textarea_field(filter_input(INPUT_POST, 'desc', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE))
     ];
     if ($chal_id) {
         $res = $wpdb->update("{$wpdb->prefix}pt_challenges", $params, [
@@ -112,7 +121,8 @@ function pt_save_challenge()
     ] : [
         'success' => 'Challenge Saved',
         'uid' => $link,
-        'id' => $chal_id
+        'id' => $chal_id,
+        'name' => $name
     ]);
 
     wp_die();

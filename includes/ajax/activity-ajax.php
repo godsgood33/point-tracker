@@ -24,19 +24,19 @@ function pt_get_activity_table()
 
     $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
 
-    $query = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}pt_activities` WHERE challenge_id = %d ORDER BY `order`", $chal_id);
+    $query = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_activities WHERE challenge_id = %d ORDER BY `order`", $chal_id);
     $res = $wpdb->get_results($query);
     $_data = [];
     foreach ($res as $row) {
         $_data[] = [
             'order' => $row->order,
             'type' => ucfirst($row->type),
-            'name' => $row->name,
+            'name' => html_entity_decode($row->name, ENT_QUOTES | ENT_HTML5),
             'points' => $row->points,
             'chal_max' => $row->chal_max,
-            'question' => $row->question,
-            'desc' => $row->desc,
-            'extras' => ($row->label ? $row->label : "{$row->min}/{$row->max}"),
+            'question' => html_entity_decode($row->question, ENT_QUOTES | ENT_HTML5),
+            'desc' => html_entity_decode($row->desc, ENT_QUOTES | ENT_HTML5),
+            'extras' => ($row->label ? html_entity_decode($row->label, ENT_QUOTES | ENT_HTML5) : "{$row->min}/{$row->max}"),
             'action' => "<i class='fas fa-edit' data-id='{$row->id}'></i>&nbsp;&nbsp;<i class='far fa-trash-alt' data-id='{$row->id}'></i>"
         ];
     }
@@ -108,7 +108,15 @@ function pt_get_activity_details()
     global $wpdb;
     $act_id = filter_input(INPUT_POST, 'act-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
 
-    print json_encode($wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_activities WHERE id = %d", $act_id)));
+    $query = "SELECT * FROM {$wpdb->prefix}pt_activities WHERE id = %d";
+    $act = $wpdb->get_row($wpdb->prepare($query, $act_id));
+
+    $act->name = html_entity_decode($act->name, ENT_QUOTES | ENT_HTML5);
+    $act->desc = html_entity_decode($act->desc, ENT_QUOTES | ENT_HTML5);
+    $act->question = html_entity_decode($act->question, ENT_QUOTES | ENT_HTML5);
+    $act->label = html_entity_decode($act->label, ENT_QUOTES | ENT_HTML5);
+
+    print json_encode($act);
     wp_die();
 }
 
@@ -122,6 +130,14 @@ function pt_get_activity_details()
 function pt_save_activity()
 {
     global $wpdb;
+
+    if (! current_user_can('manage_options')) {
+        print json_encode([
+            'error' => 'Error saving activity (access denied)'
+        ]);
+        wp_die();
+    }
+
     $name = preg_replace("/[^a-z]/", "", strtolower(
         filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE)
         ));
@@ -129,8 +145,8 @@ function pt_save_activity()
     $pts = filter_input(INPUT_POST, 'points', FILTER_VALIDATE_FLOAT, FILTER_NULL_ON_FAILURE);
     $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
     $type = filter_input(INPUT_POST, 'type', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => "/checkbox|number|radio|text/"]]);
-    $ques = filter_input(INPUT_POST, 'question', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
-    $desc = filter_input(INPUT_POST, 'desc', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
+    $ques = sanitize_text_field(filter_input(INPUT_POST, 'question', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE));
+    $desc = sanitize_text_field(filter_input(INPUT_POST, 'desc', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE));
     $order = filter_input(INPUT_POST, 'order', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
 
     $params = [
@@ -146,13 +162,6 @@ function pt_save_activity()
     if (! pt_validate_activity($params)) {
         print json_encode([
             'error' => $params['error']
-        ]);
-        wp_die();
-    }
-
-    if (! current_user_can('manage_options')) {
-        print json_encode([
-            'error' => 'Error saving activity (access denied)'
         ]);
         wp_die();
     }
@@ -187,7 +196,11 @@ function pt_save_activity()
 
     print json_encode([
         'id' => $id,
-        'success' => 'Successfully saved the activity'
+        'success' => 'Successfully saved the activity',
+        'name' => $name,
+        'desc' => $desc,
+        'question' => $ques,
+        'label' => $params['label']
     ]);
 
     wp_die();
@@ -247,7 +260,7 @@ function pt_validate_activity(&$act)
 {
     $ret = true;
 
-    $act['error'] = '';
+    $act['error'] = null;
 
     if (! $act['type'] || ! in_array($act['type'], [
         'checkbox',
@@ -283,7 +296,7 @@ function pt_validate_activity(&$act)
             $act['error'] .= 'Invalid label for answer options<br />';
             $ret = false;
         } else {
-            $act['label'] = $label;
+            $act['label'] = sanitize_text_field($label);
         }
     } elseif (in_array($act['type'], [
         'text',

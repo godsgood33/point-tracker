@@ -14,6 +14,9 @@ global $wpdb;
 
 $chal_link = filter_input(INPUT_GET, 'chal', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
 $chal = Point_Tracker::init($chal_link);
+
+$chal->name = html_entity_decode($chal->name, ENT_QUOTES | ENT_HTML5);
+$chal->desc = html_entity_decode($chal->desc, ENT_QUOTES | ENT_HTML5);
 ?>
 
 <h2><?php print $chal->name; ?></h2>
@@ -58,13 +61,16 @@ ORDER BY
 		<tbody id='my-activity-body'>
 <?php
     foreach ($my_act as $act) {
+        $ques = html_entity_decode($act->question, ENT_QUOTES | ENT_HTML5);
+        $val = html_entity_decode($act->value, ENT_QUOTES | ENT_HTML5);
+        $dt = new DateTime("{$act->log_date} {$act->log_time}", new DateTimeZone(get_option('timezone_string')));
         print <<<EOR
 <tr>
-    <td>{$act->question}</td>
+    <td>{$ques}</td>
     <td>{$act->points}</td>
     <td>{$act->log_date}</td>
     <td>{$act->log_time}</td>
-    <td>{$act->value}</td>
+    <td>{$val}</td>
     <td><i class='far fa-trash-alt' title='Delete this activity so you can reinput with the correct info' data-act-id='{$act->id}' data-log-date='{$act->log_date}' data-user-id='{$user->ID}'></i></td>
 </tr>
 EOR;

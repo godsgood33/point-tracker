@@ -21,18 +21,26 @@ function pt_get_participant_table()
     $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
     $chal = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_challenges WHERE id = %d", $chal_id));
 
-    $query = $wpdb->prepare("CREATE TEMPORARY TABLE tmp_log " . "SELECT IF(ca.type = 'number',(ca.points * al.value),ca.points) AS 'total_points',cp.* " . "FROM {$wpdb->prefix}pt_participants cp " . "LEFT JOIN {$wpdb->prefix}pt_log al ON al.user_id = cp.user_id " . "LEFT JOIN {$wpdb->prefix}pt_activities ca on ca.id = al.activity_id " . "WHERE cp.challenge_id = %d " . "GROUP BY cp.user_id, al.activity_id, al.log_date", $chal_id);
+    $query = $wpdb->prepare("CREATE TEMPORARY TABLE tmp_log
+SELECT IF(ca.type = 'number',(ca.points * al.value),ca.points) AS 'total_points',cp.*
+FROM {$wpdb->prefix}pt_participants cp
+LEFT JOIN {$wpdb->prefix}pt_log al ON al.user_id = cp.user_id
+LEFT JOIN {$wpdb->prefix}pt_activities ca on ca.id = al.activity_id
+WHERE cp.challenge_id = %d
+GROUP BY cp.user_id, al.activity_id, al.log_date", $chal_id);
     $wpdb->query($query);
 
-    $query = "SELECT SUM(al.total_points) AS 'total',al.*" . "FROM tmp_log al " . "GROUP BY al.user_id";
+    $query = "SELECT SUM(al.total_points) AS 'total',al.*
+FROM tmp_log al
+GROUP BY al.user_id";
     $participants = $wpdb->get_results($query);
 
     foreach ($participants as $part) {
         $_data[] = [
             'approved' => "<input type='checkbox' " . (! $chal->approval ? "disabled" : "") . " class='approve' " . ((boolean) $part->approved ? " checked" : "") . " data-user-id='{$part->user_id}' />",
             'memberid' => $part->member_id,
-            'name' => $part->name,
-            'email' => $part->email,
+            'name' => html_entity_decode($part->name, ENT_QUOTES | ENT_HTML5),
+            'email' => sanitize_email($part->email),
             'totalPoints' => $part->total,
             'action' => "<i class='far fa-trash-alt' title='Remove this participant from the activity' data-user-id='{$part->user_id}'></i>"
         ];
@@ -108,7 +116,7 @@ function pt_approve_participant()
 
     if ($res) {
         $email = $wpdb->get_var($wpdb->prepare("SELECT email FROM {$wpdb->prefix}pt_participants WHERE user_id = %d AND challenge_id = %d", $user_id, $chal_id));
-        if (get_option('pt-email-new-participants', 0)) {
+        if($email) {
             wp_mail($email, 'Approved for Team Challenge', PT_USER_APPROVED);
         }
 
@@ -167,7 +175,7 @@ WHERE
     ]);
 
     if ($res) {
-        if (get_option('pt-email-new-participants', 0)) {
+        if($email) {
             wp_mail($email, 'Removed from Team Challenge', PT_USER_DENIED);
         }
 
@@ -202,7 +210,7 @@ function pt_add_participant()
     }
 
     $member_id = filter_input(INPUT_POST, 'member-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-    $name = filter_input(INPUT_POST, 'user-name', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
+    $name = sanitize_text_field(filter_input(INPUT_POST, 'user-name', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE));
     $email = sanitize_email(filter_input(INPUT_POST, 'user-email', FILTER_SANITIZE_EMAIL, FILTER_NULL_ON_FAILURE));
     $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
     $now = new DateTime("now", new DateTimeZone(get_option("timezone_string")));
@@ -266,15 +274,13 @@ function pt_add_participant()
         ]);
     }
 
-    if (get_option("pt-email-new-participants", 0)) {
-        wp_mail("{$name} <{$email}>", "Added to challenge", str_replace([
-            "{name}",
-            "{desc}"
-        ], [
-            $chal->name,
-            $chal->desc
-        ], PT_USER_ADDED));
-    }
+    wp_mail("{$name} <{$email}>", "Added to challenge", str_replace([
+        "{name}",
+        "{desc}"
+    ], [
+        $chal->name,
+        $chal->desc
+    ], PT_USER_ADDED));
 
     wp_die();
 }
@@ -296,6 +302,13 @@ function pt_join_challenge()
     $query = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_challenges WHERE " . (is_numeric($chal_id) ? "id=%d" : "short_link=%s"), $chal_id);
     $chal = $wpdb->get_row($query);
 
+    if(!$chal) {
+        print json_encode([
+            'error' => 'Unable to find the selected challenge'
+        ]);
+        wp_die();
+    }
+
     $now = new DateTime("now", new DateTimeZone(get_option("timezone_string")));
     $user = wp_get_current_user();
 
@@ -313,15 +326,13 @@ function pt_join_challenge()
         'date_joined' => $now->format("Y-m-d"),
         'date_approved' => ($chal->approval ? null : $now->format("Y-m-d")),
         'member_id' => $member_id,
-        'name' => $name,
+        'name' => sanitize_text_field($name),
         'email' => $user->user_email
     ]);
 
-    if(get_option('admin_email', null)) {
-        wp_mail(get_option('admin_email'), "Participant joined {$chal->name}", str_replace(
-            ["{name}", "{chal}"], [$name, $chal->name], PT_NEW_PARTICIPANT
-        ));
-    }
+    wp_mail(get_option('admin_email'), "Participant joined {$chal->name}", str_replace(
+        ["{name}", "{chal}"], [$name, $chal->name], PT_NEW_PARTICIPANT
+    ));
 
     print json_encode($res ? [
         'success' => ($chal->approval ? "Requested to join" : "Joined challenge"),

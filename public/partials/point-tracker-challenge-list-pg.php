@@ -85,12 +85,13 @@ if (is_user_logged_in()) {
 	<tbody id='registered-challenges-body'>
 <?php
     foreach ($current_challenges as $chal) {
-        $desc = nl2br(stripcslashes($chal->desc));
+        $name = html_entity_decode($chal->name, ENT_QUOTES | ENT_HTML5);
+        $desc = nl2br(html_entity_decode(stripcslashes($chal->desc), ENT_QUOTES | ENT_HTML5));
         $link = ($chal->approved ? "<a href='{$chal_page->guid}?chal={$chal->short_link}'>{$chal->short_link}</a>" : "{$chal->short_link}");
         $approved = ($chal->approved ? "Yes" : "No");
         print <<<EOR
     <tr>
-        <td>{$chal->name}</td>
+        <td>{$name}</td>
         <td>$link<br />
             <a href='{$act_page->guid}?chal={$chal->short_link}'>My Activity</a>
         </td>
@@ -118,12 +119,13 @@ EOR;
 	<tbody id='upcoming-challenges-body'>
 <?php
     foreach ($upcoming_challenges as $chal) {
+        $name = html_entity_decode($chal->name, ENT_QUOTES | ENT_HTML5);
+        $desc = nl2br(html_entity_decode(stripcslashes($chal->desc), ENT_QUOTES | ENT_HTML5));
         $starts = new DateTime($chal->start, new DateTimeZone(get_option('timezone_string')));
-        $desc = nl2br(stripcslashes($chal->desc));
         $approved = ($chal->approved ? "Yes" : "No");
         print <<<EOR
     <tr>
-        <td>{$chal->name}</td>
+        <td>{$name}</td>
         <td>{$chal->short_link}</td>
         <td>$approved</td>
         <td>{$starts->format('M j, y')}</td>
@@ -149,12 +151,13 @@ EOR;
 
 <?php
     foreach ($past_challenges as $chal) {
-        $desc = nl2br(stripcslashes($chal->desc));
+        $name = html_entity_decode($chal->name, ENT_QUOTES | ENT_HTML5);
+        $desc = nl2br(html_entity_decode(stripcslashes($chal->desc), ENT_QUOTES | ENT_HTML5));
         print <<<EOR
 <tr>
-    <td>$chal->name</td>
-    <td>$chal->short_link</td>
-    <td>$desc</td>
+    <td>{$name}</td>
+    <td>{$chal->short_link}</td>
+    <td>{$desc}</td>
 </tr>
 EOR;
     }
@@ -162,4 +165,5 @@ EOR;
 	</tbody>
 </table>
 
-<?php } ?>
+<?php }
+

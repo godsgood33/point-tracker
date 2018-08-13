@@ -25,6 +25,8 @@ WHERE
     challenge_id = %d
 ORDER BY `order`";
 $chal->activities = $wpdb->get_results($wpdb->prepare($query, $chal->id));
+$chal->name = html_entity_decode($chal->name, ENT_QUOTES | ENT_HTML5);
+$chal->desc = nl2br(html_entity_decode(stripcslashes($chal->desc), ENT_QUOTES | ENT_HTML5));
 
 if(!$chal->activities) {
     wp_die("There are no activities in this challenge");
@@ -55,13 +57,14 @@ if (is_user_logged_in()) {
 <br />
 <input type='text' id='user-name' placeholder='Name...'
 	title='Please enter your first and last name'
-	value='<?php print (isset($part) ? $part->name : null); ?>' />
+	value='<?php print (isset($part) ? html_entity_decode($part->name, ENT_QUOTES | ENT_HTML5) : null); ?>' />
 <br />
 <input type='email' id='user-email' placeholder='Email...'
 	title='Please enter your email' value='<?php print (isset($part) ? $part->email : null); ?>' />
 <br />
 <?php
     foreach ($chal->activities as $act) {
+        $desc = esc_attr($act->desc);
         $id = str_replace(" ", "-", strtolower($act->name));
 
         if ($prev && $prev != $id) {
@@ -73,27 +76,29 @@ if (is_user_logged_in()) {
 </div>
 </div>
 <!-- closing tag for .activity -->
-<div class='activity tooltip-field'<?php print ($act->desc ? " title='{$act->desc}'" : ""); ?>>
+<div class='activity tooltip-field'<?php print ($desc ? " title='{$desc}'" : ""); ?>>
 	<div class='question-container'>
 <?php
         } elseif (empty($prev)) {
             ?>
   <div class='activity tooltip-field'
-			<?php print ($act->desc ? " title='{$act->desc}'" : ""); ?>>
+			<?php print ($desc ? " title='{$desc}'" : ""); ?>>
 			<div class='question-container'>
 <?php
         }
 
-        print "<input type='hidden' class='id' value='{$act->id}' />" . "<input type='hidden' class='type' value='{$act->type}' />";
+        print "<input type='hidden' class='id' value='{$act->id}' />
+<input type='hidden' class='type' value='{$act->type}' />";
 
         $query = $wpdb->prepare("SELECT CONCAT(log_date,' ', log_time) as 'last-activity'
-FROM `{$wpdb->prefix}pt_log`
+FROM {$wpdb->prefix}pt_log
 WHERE
     `user_id`=%d AND
     `activity_id`=%d
 ORDER BY log_date DESC
 LIMIT 1", get_current_user_id(), $act->id);
 
+        $ques = html_entity_decode($act->question, ENT_QUOTES | ENT_HTML5);
         $la = null;
         if ($last_activity = $wpdb->get_var($query)) {
             $last_activity = new DateTime($last_activity);
@@ -106,13 +111,14 @@ LIMIT 1", get_current_user_id(), $act->id);
         } else {
             $pts = "<small title='Activity Point Value'>($act->points pts)</small>";
         }
-        print "<h3>{$act->question} $pts $la</h3>";
+        print "<h3>{$ques} $pts $la</h3>";
 
         if ($act->type == 'radio' || $act->type == 'checkbox') {
             $labels = explode(",", $act->label);
 
             foreach ($labels as $label) {
                 $id = str_replace(" ", "-", strtolower($label));
+                $label = esc_attr($label);
 
                 print <<<EOR
 <label for='$id'>$label</label>&nbsp;&nbsp;
@@ -128,7 +134,7 @@ EOR;
 
             $inputmode = ($act->type == 'number' ? " inputmode='numeric' pattern='[0-9]*'" : null);
 
-            print "<label for='$id'>{$act->question} <small>({$act->points} pts)</small></label><br />";
+            print "<label for='$id'>{$ques} <small>({$act->points} pts)</small></label><br />";
             print "<input type='{$act->type}' class='value' id='$id'$inputmode $min $max $val />&nbsp;&nbsp;";
         }
 
@@ -152,7 +158,9 @@ EOR;
 				title='Please enter your email' /><br />
 <?php
     foreach ($chal->activities as $act) {
+        $desc = esc_attr($act->desc);
         $id = str_replace(" ", "-", strtolower($act->name));
+        $ques = html_entity_decode($act->question, ENT_QUOTES | ENT_HTML5);
 
         if ($prev && $prev != $id) {
             ?>
@@ -164,26 +172,28 @@ EOR;
 	</div>
 	<!-- closing tag for .activity -->
 	<div class='activity tooltip-field'
-		<?php print ($act->desc ? " title='{$act->desc}'" : ""); ?>>
+		<?php print ($desc ? " title='{$desc}'" : ""); ?>>
 		<div class='question-container'>
 <?php
         } elseif (empty($prev)) {
             ?>
   <div class='activity tooltip-field'
-				<?php print ($act->desc ? " title='{$act->desc}'" : ""); ?>>
+				<?php print ($desc ? " title='{$desc}'" : ""); ?>>
 				<div class='question-container'>
 <?php
         }
 
-        print "<input type='hidden' class='id' value='{$act->id}' />" . "<input type='hidden' class='type' value='{$act->type}' />";
+        print "<input type='hidden' class='id' value='{$act->id}' />
+<input type='hidden' class='type' value='{$act->type}' />";
 
         if ($act->type == 'radio' || $act->type == 'checkbox') {
-            print "<div>{$act->question} <small>({$act->points} pts)</small></div>";
+            print "<div>{$ques} <small>({$act->points} pts)</small></div>";
 
             $labels = explode(",", $act->label);
 
             foreach ($labels as $label) {
                 $id = str_replace(" ", "-", strtolower($label));
+                $label = esc_attr($label);
 
                 print <<<EOR
 <label for='$id'>$label</label>&nbsp;&nbsp;
@@ -199,7 +209,7 @@ EOR;
 
             $inputmode = ($act->type == 'number' ? " inputmode='numeric' pattern='[0-9]*'" : null);
 
-            print "<label for='$id'>{$act->question} <small>({$act->points} pts)</small></label><br />";
+            print "<label for='$id'>{$ques} <small>({$act->points} pts)</small></label><br />";
             print "<input type='{$act->type}' class='value' id='$id'$inputmode $min $max $val />&nbsp;&nbsp;";
         }
 

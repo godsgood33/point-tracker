@@ -49,8 +49,8 @@ ORDER BY al.log_date,al.log_time";
             $dt = new DateTime($log->log_date . " " . $log->log_time);
             $_data[] = [
                 'id' => $log->member_id,
-                'name' => $log->name,
-                'activity' => $log->question,
+                'name' => html_entity_decode($log->name, ENT_QUOTES | ENT_HTML5),
+                'activity' => html_entity_decode($log->question, ENT_QUOTES | ENT_HTML5),
                 'points' => $log->points,
                 'dt' => $dt->format(get_option('date_format', 'm/d/Y')),
                 'answer' => $log->value,
@@ -124,9 +124,9 @@ function pt_participant_save_entry()
         ]
     ]);
     $member_id = filter_input(INPUT_POST, 'member-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-    $user_name = filter_input(INPUT_POST, 'user-name', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
-    $user_email = filter_input(INPUT_POST, 'user-email', FILTER_VALIDATE_EMAIL, FILTER_NULL_ON_FAILURE);
-    $act_val = filter_input(INPUT_POST, 'value', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
+    $user_name = sanitize_text_field(filter_input(INPUT_POST, 'user-name', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE));
+    $user_email = sanitize_email(filter_input(INPUT_POST, 'user-email', FILTER_VALIDATE_EMAIL, FILTER_NULL_ON_FAILURE));
+    $act_val = sanitize_text_field(filter_input(INPUT_POST, 'value', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE));
 
     if (! $member_id) {
         print json_encode([
@@ -239,8 +239,7 @@ WHERE
     // Make sure a user was added to the challenge
     if (! $res) {
         print json_encode([
-            'error' => 'Unable to add you to the challenge',
-            'part' => 2
+            'error' => 'Unable to add you to the challenge'
         ]);
         wp_die();
     }
@@ -345,7 +344,7 @@ WHERE user_id = %d", $user_id);
                 ]);
                 wp_die();
             }
-        } else {}
+        }
     }
 
     $res = $wpdb->insert("{$wpdb->prefix}pt_log", $params);
@@ -381,7 +380,7 @@ function pt_get_my_activity_table()
     global $wpdb;
     $_data = [];
     $member_id = filter_input(INPUT_POST, 'member-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL, FILTER_NULL_ON_FAILURE);
+    $email = sanitize_email(filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL, FILTER_NULL_ON_FAILURE));
     $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
 
     $query = $wpdb->prepare("SELECT user_id
@@ -393,7 +392,9 @@ WHERE
     $uid = $wpdb->get_var($query);
 
     if(!$uid) {
-        print json_encode(['error' => 'Failed to retrieve user id']);
+        print json_encode([
+            'error' => 'Failed to retrieve user id'
+        ]);
     }
     else {
         $wpdb->query($wpdb->prepare("SET @challenge_id=%d", $chal_id));
@@ -414,11 +415,11 @@ ORDER BY
 
         foreach($my_act as $act) {
             $_data[] = [
-                'name' => $act->question,
+                'name' => html_entity_decode($act->question, ENT_QUOTES | ENT_HTML5),
                 'points' => $act->points,
                 'date' => $act->log_date,
                 'time' => $act->log_time,
-                'answer' => $act->value,
+                'answer' => html_entity_decode($act->value, ENT_QUOTES | ENT_HTML5),
                 'action' => "<i class='far fa-trash-alt' title='Delete this activity so you can input the correct info' data-act-id='{$act->id}' data-log-date='{$act->log_date}' data-user-id='{$act->user_id}'></i>"
                 ];
         }

@@ -33,8 +33,6 @@ class Point_Tracker_Deactivator
         global $wpdb;
 
         delete_option('pt-require-login');
-        delete_option('pt-email-new-participants');
-        delete_option('pt-admin-summary-email');
 
         $the_page = get_page_by_title("Challenge");
         wp_update_post([

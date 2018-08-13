@@ -2,7 +2,7 @@
 /**
  * File: constants.php
  * Author: Ryan Prather
- * Purpose: Store any constants.php used in the plugin
+ * Purpose: Store any constants used in the plugin
  */
 
 /**
@@ -43,21 +43,22 @@ The challenge coordinator has denied your request for access to the challenge.  
 /**
  * Constant string sent to new users when the admin adds them to a challenge
  *
- *
+ * @var string
  */
 define('PT_NEW_USER', "Greetings,
-At your request, we have added a new account for you at ".site_url().". ".
-    "You an now login with the credentials below:
+At your request, we have added a new account for you at ".site_url().".
+    You an now login with the credentials below:
 
 Username: {username}
 Password: {password}
 
-If you have any questions please e-mail ".
-    "<a href='mailto:".get_option('admin_email', '')."'>".get_option('admin_email', '')."</a>");
+If you have any questions please e-mail
+    <a href='mailto:".get_option('admin_email', '')."'>".get_option('admin_email', '')."</a>");
 
 /**
+ * Constant defining the email content used to notify the admin that a new participant has joined the challenge
  *
- * @var unknown
+ * @var string
  */
 define('PT_NEW_PARTICIPANT', "Hey Admin, a participant joined a challenge
 Name: {name}

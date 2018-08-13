@@ -28,7 +28,12 @@ $challenges = $wpdb->get_results($query) or [];
 Challenge Name:
 <select id='challenge_activities'>
 	<option value=''>-- Select Challenge --</option>
-<?php foreach($challenges as $chal): print "<option value='{$chal->id}'>{$chal->name}</option>"; endforeach; ?>
+<?php
+foreach($challenges as $chal) {
+    $name = html_entity_decode($chal->name, ENT_QUOTES | ENT_HTML5);
+    print "<option value='{$chal->id}'>{$name}</option>";
+}
+?>
 </select>
 <br />
 <input type='button' id='save-activity' value='Save' />
