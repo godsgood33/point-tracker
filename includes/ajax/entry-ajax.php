@@ -1,10 +1,10 @@
 <?php
-// admin ajax requests
+// logged in user ajax requests
 add_action('wp_ajax_get-log', 'pt_get_log_table');
-
-// public ajax requests
 add_action('wp_ajax_save-entry', 'pt_participant_save_entry');
 add_action('wp_ajax_delete-participant-activity', 'pt_delete_participant_activity');
+
+// public ajax requests
 add_action('wp_ajax_nopriv_save-entry', 'pt_participant_save_entry');
 add_action('wp_ajax_nopriv_get-my-activity', 'pt_get_my_activity_table');
 add_action('wp_ajax_nopriv_delete-participant-activity', 'pt_delete_participant_activity');
@@ -414,11 +414,12 @@ ORDER BY
         $my_act = $wpdb->get_results($query);
 
         foreach($my_act as $act) {
+            $dt = new DateTime("{$act->log_date} {$act->log_time}", new DateTimeZone(get_option('timezone_string')));
             $_data[] = [
                 'name' => html_entity_decode($act->question, ENT_QUOTES | ENT_HTML5),
                 'points' => $act->points,
-                'date' => $act->log_date,
-                'time' => $act->log_time,
+                'date' => $dt->format(get_option('date_format', 'Y-m-d')),
+                'time' => $dt->format(get_option('time_format', 'H:i:s')),
                 'answer' => html_entity_decode($act->value, ENT_QUOTES | ENT_HTML5),
                 'action' => "<i class='far fa-trash-alt' title='Delete this activity so you can input the correct info' data-act-id='{$act->id}' data-log-date='{$act->log_date}' data-user-id='{$act->user_id}'></i>"
                 ];
@@ -486,10 +487,18 @@ function pt_delete_participant_activity()
     $act_id = filter_input(INPUT_POST, 'act-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
     $log_date = filter_input(INPUT_POST, 'log-date', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
 
+    $dt = new DateTime($log_date, new DateTimeZone(get_option('timezone_string')));
+    if(!is_a($dt, 'DateTime')) {
+        print json_encode([
+            'error' => 'Failed to determine the log date'
+        ]);
+        wp_die();
+    }
+
     $res = $wpdb->delete("{$wpdb->prefix}pt_log", [
         'user_id' => $user_id,
         'activity_id' => $act_id,
-        'log_date' => $log_date
+        'log_date' => $dt->format("Y-m-d")
     ]);
 
     print json_encode($res !== false ? [

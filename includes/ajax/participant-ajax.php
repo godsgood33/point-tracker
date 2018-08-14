@@ -20,6 +20,13 @@ function pt_get_participant_table()
 
     $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
     $chal = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_challenges WHERE id = %d", $chal_id));
+	
+	if(!$chal) {
+		print json_encode([
+			'error' => 'Unable to find the selected challenge'
+		]);
+		wp_die();
+	}
 
     $query = $wpdb->prepare("CREATE TEMPORARY TABLE tmp_log
 SELECT IF(ca.type = 'number',(ca.points * al.value),ca.points) AS 'total_points',cp.*
@@ -148,9 +155,7 @@ function pt_remove_participant()
             'error' => 'You are not the coordinator of this challenge (access denied)'
         ]);
         wp_die();
-    }
-
-    if(!check_ajax_referer('pt-delete-participant', 'security', false)) {
+    } elseif(!check_ajax_referer('pt-delete-participant', 'security', false)) {
         print json_encode([
             'error' => 'We were unable to verify the nonce'
         ]);

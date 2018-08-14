@@ -107,9 +107,10 @@ function pt_get_activity_details()
 {
     global $wpdb;
     $act_id = filter_input(INPUT_POST, 'act-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+    $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
 
-    $query = "SELECT * FROM {$wpdb->prefix}pt_activities WHERE id = %d";
-    $act = $wpdb->get_row($wpdb->prepare($query, $act_id));
+    $query = "SELECT * FROM {$wpdb->prefix}pt_activities WHERE id = %d AND challenge_id = %d";
+    $act = $wpdb->get_row($wpdb->prepare($query, $act_id, $chal_id));
 
     $act->name = html_entity_decode($act->name, ENT_QUOTES | ENT_HTML5);
     $act->desc = html_entity_decode($act->desc, ENT_QUOTES | ENT_HTML5);

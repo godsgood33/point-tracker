@@ -144,9 +144,7 @@ function pt_delete_challenge()
             'error' => 'Access Denied'
         ]);
         wp_die();
-    }
-
-    if(!check_ajax_referer('pt-delete-challenge', 'security', false)) {
+    } elseif(!check_ajax_referer('pt-delete-challenge', 'security', false)) {
         print json_encode([
             'error' => 'We were unable to verify the nonce'
         ]);
@@ -155,28 +153,32 @@ function pt_delete_challenge()
 
     $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
 
-    $wpdb->delete("{$wpdb->prefix}pt_challenges", [
+    $res = $wpdb->delete("{$wpdb->prefix}pt_challenges", [
         'id' => $chal_id
     ]);
 
-    $activities = $wpdb->get_results($wpdb->prepare("SELECT id FROM `{$wpdb->prefix}pt_activities` WHERE challenge_id=%d", $chal_id));
+	if($res) {
+		$activities = $wpdb->get_results($wpdb->prepare("SELECT id FROM `{$wpdb->prefix}pt_activities` WHERE challenge_id=%d", $chal_id));
 
-    $wpdb->delete("{$wpdb->prefix}pt_activities", [
-        'challenge_id' => $chal_id
-    ]);
-    $wpdb->delete("{$wpdb->prefix}pt_participants", [
-        'challenge_id' => $chal_id
-    ]);
+		$wpdb->delete("{$wpdb->prefix}pt_activities", [
+			'challenge_id' => $chal_id
+		]);
+		$wpdb->delete("{$wpdb->prefix}pt_participants", [
+			'challenge_id' => $chal_id
+		]);
 
-    foreach ($activities as $act) {
-        $wpdb->delete("{$wpdb->prefix}pt_log", [
-            "activity_id" => $act
-        ]);
-    }
+		foreach ($activities as $act) {
+			$wpdb->delete("{$wpdb->prefix}pt_log", [
+				"activity_id" => $act
+			]);
+		}
+	}
 
-    print json_encode([
+	print json_encode($res ? [
         'success' => 'Successfully deleted challenge'
-    ]);
+    ] : [
+		'error' => $wpdb->last_error
+	]);
 
     wp_die();
 }
