@@ -7,7 +7,7 @@ if(!current_user_can('manage_options')) {
 $action = filter_input(INPUT_POST, 'action', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
 
 if($action == 'Save Settings') {
-	if(!check_ajax_referer('pt-update-options')) {
+	if(!check_ajax_referer('pt-update-options', '_wpnonce', false)) {
 		print "Unable to verify permissions";
 		wp_die();
 	}

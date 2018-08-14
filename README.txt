@@ -52,12 +52,6 @@ The challenge will automatically approve all pending participants and any future
 = 1.0 =
 * Initial release
 
-= 2.0 =
-* Add start and end date to challenge activities
-* Cleaned up admin and public UI
-* Allow non-site members to join a challenge and track their points
-* Add and use DataTables
-
 == Upgrade Notice ==
 
 Upgrade section
