@@ -69,8 +69,8 @@ class Point_Tracker
      */
     public function __construct()
     {
-        if (defined('PLUGIN_NAME_VERSION')) {
-            $this->version = PLUGIN_NAME_VERSION;
+        if (defined('PT_PLUGIN_NAME_VERSION')) {
+            $this->version = PT_PLUGIN_NAME_VERSION;
         } else {
             $this->version = '2.1.0';
         }

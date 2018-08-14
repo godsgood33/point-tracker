@@ -7,6 +7,11 @@ if(!current_user_can('manage_options')) {
 $action = filter_input(INPUT_POST, 'action', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
 
 if($action == 'Save Settings') {
+	if(!check_ajax_referer('pt-update-options')) {
+		print "Unable to verify permissions";
+		wp_die();
+	}
+	
     $req_login = (boolean) filter_input(INPUT_POST, 'require-login', FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     update_option('pt-require-login', ($req_login ? 1 : 0));
 
@@ -18,6 +23,7 @@ if($action == 'Save Settings') {
 
 <div>
 	<form method='post' action='#'>
+		<input type='hidden' name='_wpnonce' value='<?php print wp_create_nonce('pt-update-options'); ?>' />
 		<div class='notice notice-warning'>
 			<?php print __('Not requiring a login opens challenge participants to potential unauthorized activity deletions', 'point-tracker'); ?>
 		</div>
