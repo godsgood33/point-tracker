@@ -39,6 +39,8 @@ EOL;
     ]);
 }
 
+$user = wp_get_current_user();
+
 $now = new DateTime("now", new DateTimeZone(get_option('timezone_string')));
 
 ?>
@@ -165,5 +167,29 @@ EOR;
 	</tbody>
 </table>
 
-<?php }
+<?php
+}
+
+?>
+
+
+<div id="dialog-form" title="Add new leader">
+    <p class="validateTips">All form fields are required.</p>
+
+    <form>
+        <fieldset>
+            <input type="text" id="member-id" placeholder="Member ID..."
+                inputmode='numeric' pattern='[0-9]*'
+                class="text ui-widget-content ui-corner-all" />
+            <input type="text" id="name" placeholder="Name..." value='<?php print $user->display_name; ?>'
+                class="text ui-widget-content ui-corner-all" />
+            <input type='email' id='email' placeholder='Email...' value='<?php print $user->user_email; ?>'
+                class='text ui-widget-content ui-corner-all' />
+
+            <!-- Allow form submission with keyboard without duplicating the dialog button -->
+            <input type="submit" tabindex="-1"
+                style="position: absolute; top: -1000px">
+        </fieldset>
+    </form>
+</div>
 

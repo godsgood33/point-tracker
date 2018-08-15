@@ -30,6 +30,9 @@ $chal->desc = html_entity_decode($chal->desc, ENT_QUOTES | ENT_HTML5);
 if (is_user_logged_in()) {
     $user = wp_get_current_user();
 
+    $wpdb->query($wpdb->prepare("SET @challenge_id=%d", $chal->id));
+    $tp = $wpdb->get_var($wpdb->prepare("SELECT SUM(total_points) FROM {$wpdb->prefix}leader_board WHERE user_id = %d", $user->ID));
+
     $query = $wpdb->prepare("SELECT
     ca.*,al.*
 FROM {$wpdb->prefix}pt_challenges c
@@ -46,6 +49,7 @@ ORDER BY
 
 <input type='hidden' id='_wpnonce' value='<?php print wp_create_nonce('pt-delete-entry'); ?>' />
 <input type='hidden' id='chal' value='<?php print $chal->short_link; ?>' />
+<div id='tp'>Total Points: <span id='total-points'><?php print ($tp ? $tp : 0); ?></span></div>
 <div id='left-half'>
 	<table id='my-activity-table' class="stripe">
 		<thead>

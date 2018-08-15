@@ -20,7 +20,7 @@ function pt_get_participant_table()
 
     $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
     $chal = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_challenges WHERE id = %d", $chal_id));
-	
+
 	if(!$chal) {
 		print json_encode([
 			'error' => 'Unable to find the selected challenge'
@@ -301,10 +301,10 @@ function pt_join_challenge()
 {
     global $wpdb;
 
-    $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
+    $chal_link = filter_input(INPUT_POST, 'chal-link', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
     $member_id = filter_input(INPUT_POST, 'member-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
 
-    $query = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_challenges WHERE " . (is_numeric($chal_id) ? "id=%d" : "short_link=%s"), $chal_id);
+    $query = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_challenges WHERE short_link = %s", $chal_link);
     $chal = $wpdb->get_row($query);
 
     if(!$chal) {
@@ -314,15 +314,10 @@ function pt_join_challenge()
         wp_die();
     }
 
-    $now = new DateTime("now", new DateTimeZone(get_option("timezone_string")));
-    $user = wp_get_current_user();
+    $name = sanitize_text_field(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE));
+    $email = sanitize_email(filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL, FILTER_NULL_ON_FAILURE));
 
-    $fname = get_user_meta($user->ID, 'first_name', true);
-    $lname = get_user_meta($user->ID, 'last_name', true);
-    $name = $user->data->display_name;
-    if($fname && $lname) {
-        $name = "{$fname} {$lname}";
-    }
+    $now = new DateTime("now", new DateTimeZone(get_option("timezone_string")));
 
     $res = $wpdb->insert("{$wpdb->prefix}pt_participants", [
         'challenge_id' => $chal->id,
@@ -331,13 +326,21 @@ function pt_join_challenge()
         'date_joined' => $now->format("Y-m-d"),
         'date_approved' => ($chal->approval ? null : $now->format("Y-m-d")),
         'member_id' => $member_id,
-        'name' => sanitize_text_field($name),
-        'email' => $user->user_email
+        'name' => $name,
+        'email' => $email
     ]);
 
-    wp_mail(get_option('admin_email'), "Participant joined {$chal->name}", str_replace(
-        ["{name}", "{chal}"], [$name, $chal->name], PT_NEW_PARTICIPANT
-    ));
+    $chal_name = html_entity_decode($chal->name, ENT_QUOTES | ENT_HTML5);
+
+    if (get_option('admin_email', null)) {
+        wp_mail(get_option('admin_email'), "Participant joined {$chal_name}", str_replace([
+            "{name}",
+            "{chal}"
+        ], [
+            html_entity_decode($name, ENT_QUOTES | ENT_HTML5),
+            $chal_name
+        ], PT_NEW_PARTICIPANT));
+    }
 
     print json_encode($res ? [
         'success' => ($chal->approval ? "Requested to join" : "Joined challenge"),

@@ -134,7 +134,6 @@ EOR;
 
             $inputmode = ($act->type == 'number' ? " inputmode='numeric' pattern='[0-9]*'" : null);
 
-            print "<label for='$id'>{$ques} <small>({$act->points} pts)</small></label><br />";
             print "<input type='{$act->type}' class='value' id='$id'$inputmode $min $max $val />&nbsp;&nbsp;";
         }
 
@@ -209,7 +208,6 @@ EOR;
 
             $inputmode = ($act->type == 'number' ? " inputmode='numeric' pattern='[0-9]*'" : null);
 
-            print "<label for='$id'>{$ques} <small>({$act->points} pts)</small></label><br />";
             print "<input type='{$act->type}' class='value' id='$id'$inputmode $min $max $val />&nbsp;&nbsp;";
         }
 

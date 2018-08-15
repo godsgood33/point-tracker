@@ -140,6 +140,7 @@ class Point_Tracker_Public
 
             wp_enqueue_script('jquery-ui-datepicker');
             wp_enqueue_script('jquery-ui-tooltip');
+            wp_enqueue_script('jquery-ui-dialog');
 
             wp_enqueue_script('datatables', plugin_dir_url(__DIR__) . "includes/datatables/DataTables-1.10.9/js/jquery.dataTables.min.js");
             wp_enqueue_script('dt-jszip', plugin_dir_url(__DIR__) . "includes/jszip/jszip.min.js");

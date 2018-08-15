@@ -1,7 +1,7 @@
 === Plugin Name ===
-Plugin Name: Point Tracker
+Point Tracker
 Contributors: godsgood33
-Tags: team activities
+Tags: team activities, challenge, content
 Requires at least: 4.4.2
 Requires PHP: 5.6
 Tested up to: 4.9.7
@@ -13,10 +13,7 @@ This plugin will allow site admins to create challenges and then participants ca
 
 == Description ==
 
-This plugin does not require but works well with membership plugins.  The admin can create a challenge,
-share the challenge link with whom they wish.  Those wishing to participate can click on the link and opt to join the challenge.
-Once the participant has joined the challenge, they can enter activity against that challenge upto daily and receive points.
-Leader boards are available if the admin opts to have the system make one available.
+This plugin does not require but works well with membership plugins.  The admin can create a challenge, share the challenge link with whom they wish.  Those wishing to participate can click on the link and opt to join the challenge. Once the participant has joined the challenge, they can enter activity against that challenge upto daily and receive points. Leader boards are available if the admin opts to have the system make one available.
 
 == Installation ==
 
@@ -25,7 +22,14 @@ This section describes how to install the plugin and get it working.
 1. Extract the 'point-tracker.zip' file in the '/wp-content/plugins/' directory or install using the plugin installer in WP
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. The Point Tracker admin menu is used to administer the challenges, its activitie, and participants.
-4. There is a PT Settings page under the Settings menu to control options for the Point Tracker
+4. Navigate to the Point Tracker -> Point Tracker admin menu
+5. Fill out the form and create a challenge (add a name, start and end dates, and a description) then click "Save"
+6. Copy the link that appears just above the description box
+7. Navigate to the Point Tracker -> Activities admin menu
+8. Select the challenge you just created from the drop down
+9. Fill out the boxes and create your first activity for that challenge and click "Save"
+10. Send the link to whomever you wish to get them to join 
+11. Under Settings -> PT Settings there are global options that you can enable, right now, it is only requiring an account for those wanting to participate in a challenge
 
 == Frequently Asked Questions ==
 
@@ -39,18 +43,37 @@ the 'manage_options' permission set.
 
 The challenge will automatically approve all pending participants and any future participants will automatically be approved
 
+= Once the challenge is over what happens? =
+
+You will need to visit the Point Tracker -> Participants page to see who has the most points
+
+= A participant entered some wrong information, what do I do? =
+
+You can either delete it yourself or if they visit the View My Activity page (/my-activity/?chal={linkcode}), they will be able to delete it themselves
+
+= I'd like a leader board =
+
+One will be available in Point Tracker Pro releasing soon
+
 == Screenshots ==
 
 1. This is a screenshot of the new menu that Point Tracker creates
 2. This is a screenshot of the Challenge editor
 3. This is a screenshot of the Activity editor
-4. This is a screenshot of the admin Leader Board
-5. This is a screenshot of the participant log
+4. This is a screenshot of the Participant list
+5. This is a screenshot of the Entry log
+6. This is a screenshot of an example challenge and activities
+7. This is a screenshot of the "View My Activity" page after a test user has saved some activities
 
 == Changelog ==
 
 = 1.0 =
 * Initial release
+
+= 1.1 =
+* Couple bug fixes
+* Add screenshots
+* 
 
 == Upgrade Notice ==
 
