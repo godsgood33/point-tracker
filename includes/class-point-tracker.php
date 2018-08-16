@@ -72,7 +72,7 @@ class Point_Tracker
         if (defined('PT_PLUGIN_NAME_VERSION')) {
             $this->version = PT_PLUGIN_NAME_VERSION;
         } else {
-            $this->version = '1.1';
+            $this->version = '1.2';
         }
         $this->plugin_name = 'point-tracker';
 

@@ -5,7 +5,7 @@ Tags: team activities, challenge, content
 Requires at least: 4.4.2
 Requires PHP: 5.6
 Tested up to: 4.9.8
-Stable tag: 1.1
+Stable tag: 1.2
 License: Apache-2.0
 License URI: https://www.apache.org/licenses/LICENSE-2.0
 
@@ -20,7 +20,7 @@ This plugin does not require but works well with membership plugins.  The admin 
 This section describes how to install the plugin and get it working.
 
 1. Extract the 'point-tracker.zip' file in the '/wp-content/plugins/' directory or install using the plugin installer in WP
-2. Activate the plugin through the 'Plugins' menu in WordPress. If you have Yoast SEO installed, you will have to deactivate it first before you can activate Point Tracker as there is a conflict. We are working at finding the reason and fixing that conflict.
+2. Activate the plugin through the 'Plugins' menu in WordPress
 3. The Point Tracker admin menu is used to administer the challenges, its activitie, and participants.
 4. Navigate to the Point Tracker -> Point Tracker admin menu
 5. Fill out the form and create a challenge (add a name, start and end dates, and a description) then click "Save"
@@ -73,7 +73,10 @@ One will be available in Point Tracker Pro releasing soon
 = 1.1 =
 * Couple bug fixes
 * Add screenshots
-* 
+
+= 1.2 =
+* More bug fixes
+* Fixed incompatibility with plugins that have a save_post hook
 
 == Upgrade Notice ==
 
