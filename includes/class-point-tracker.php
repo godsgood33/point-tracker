@@ -217,9 +217,7 @@ class Point_Tracker
         $req_login = (boolean) get_option('pt-require-login', 0);
         $now = new DateTime("now", new DateTimeZone(get_option('timezone_string')));
 
-        if(is_plugin_active('wordpress-seo/wp-seo.php') && !is_plugin_active('point-tracker/point-tracker.php')) {
-            wp_die("Point Tracker currently has a conflict with Yoast SEO.  Deactivate Yoast SEO first, activiate/deactivate Point Tracker, then reactivate Yoast SEO");
-        } elseif($list && !$chal_link) {
+        if($list && !$chal_link) {
             return null;
         }
 

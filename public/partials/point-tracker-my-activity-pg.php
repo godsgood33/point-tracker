@@ -11,7 +11,6 @@
  * @subpackage Point_Tracker/public/partials
  */
 global $wpdb;
-include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
 $chal_link = filter_input(INPUT_GET, 'chal', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
 $chal = Point_Tracker::init($chal_link);
@@ -73,8 +72,8 @@ ORDER BY
 <tr>
     <td>{$ques}</td>
     <td>{$act->points}</td>
-    <td>{$act->log_date}</td>
-    <td>{$act->log_time}</td>
+    <td>{$dt->format(get_option('date_format', "Y-m-d"))}</td>
+    <td>{$dt->format(get_option('time_format', 'H:i:s'))}</td>
     <td>{$val}</td>
     <td><i class='far fa-trash-alt' title='Delete this activity so you can reinput with the correct info' data-act-id='{$act->id}' data-log-date='{$act->log_date}' data-user-id='{$user->ID}'></i></td>
 </tr>

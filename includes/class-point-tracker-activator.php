@@ -34,6 +34,77 @@ class Point_Tracker_Activator
     public static function activate()
     {
         update_option('pt-require-login', 0);
+
+        if(!remove_all_actions('save_post')) {
+            wp_die("Could not remove save_post actions");
+        }
+
+        $site_url = get_site_url();
+
+        $the_page = get_page_by_title("Challenge");
+        if (! $the_page->ID) {
+            // create page with template
+            $post_id = wp_insert_post(array(
+                'post_title' => 'Challenge',
+                'post_content' => "[challenge_page]",
+                'post_status' => 'publish',
+                'post_author' => 1,
+                'post_type' => 'page',
+                'guid' => "{$site_url}/index.php/challenge/"
+            ));
+        } else {
+            // make sure the page is not trashed...
+            $the_page->post_status = 'publish';
+            $the_page->post_content = "[challenge_page]";
+            $the_page->guid = "{$site_url}/index.php/challenge/";
+            $post_id = wp_update_post($the_page);
+        }
+
+        if (! $post_id) {
+            die("Failed to save Challenge page");
+        }
+
+        $the_page = get_page_by_title("Challenge List");
+        if (! $the_page->ID) {
+            $post_id = wp_insert_post(array(
+                'post_title' => 'Challenge List',
+                'post_content' => '[challenge_list]',
+                'post_status' => 'publish',
+                'post_author' => 1,
+                'post_type' => 'page',
+                'guid' => "{$site_url}/index.php/challenge-list/"
+            ));
+        } else {
+            $the_page->post_status = 'publish';
+            $the_page->post_content = '[challenge_list]';
+            $the_page->guid = "{$site_url}/index.php/challenge-list/";
+            $post_id = wp_update_post($the_page);
+        }
+
+        if (! $post_id) {
+            die("Failed to save Challenge List page");
+        }
+
+        $the_page = get_page_by_title("My Activity");
+        if (! $the_page->ID) {
+            $post_id = wp_insert_post(array(
+                'post_title' => 'My Activity',
+                'post_content' => '[my_activity]',
+                'post_status' => 'publish',
+                'post_author' => 1,
+                'post_type' => 'page',
+                'guid' => "{$site_url}/index.php/my-activity/"
+            ));
+        } else {
+            $the_page->post_status = 'publish';
+            $the_page->post_content = '[my_activity]';
+            $the_page->guid = "{$site_url}/index.php/my-activity/";
+            $post_id = wp_update_post($the_page);
+        }
+
+        if (! $post_id) {
+            die("Failed to save My Activity page");
+        }
     }
 
     /**

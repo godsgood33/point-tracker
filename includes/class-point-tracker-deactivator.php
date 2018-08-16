@@ -32,6 +32,10 @@ class Point_Tracker_Deactivator
     {
         global $wpdb;
 
+        if(!remove_all_actions('save_post')) {
+            wp_die("Could not remove save_post actions");
+        }
+
         delete_option('pt-require-login');
 
         $the_page = get_page_by_title("Challenge");
