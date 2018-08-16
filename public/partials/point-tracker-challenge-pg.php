@@ -11,6 +11,7 @@
  * @subpackage Point_Tracker/public/partials
  */
 global $wpdb;
+include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
 $chal_link = filter_input(INPUT_GET, 'chal', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
 $chal = Point_Tracker::init($chal_link);

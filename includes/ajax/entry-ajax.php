@@ -126,7 +126,6 @@ function pt_participant_save_entry()
     $member_id = filter_input(INPUT_POST, 'member-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
     $user_name = sanitize_text_field(filter_input(INPUT_POST, 'user-name', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE));
     $user_email = sanitize_email(filter_input(INPUT_POST, 'user-email', FILTER_VALIDATE_EMAIL, FILTER_NULL_ON_FAILURE));
-    $act_val = sanitize_text_field(filter_input(INPUT_POST, 'value', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE));
 
     if (! $member_id) {
         print json_encode([
@@ -244,14 +243,14 @@ WHERE
         wp_die();
     }
 
-    if (is_array($act_val)) {
-        $value = implode(",", $act_val);
-    } else {
-        $value = $act_val;
-    }
-
     $query = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_activities WHERE id = %d", $act_id);
     $act = $wpdb->get_row($query);
+
+    if($act->type == 'checkbox') {
+        $value = implode(',', filter_input(INPUT_POST, 'value', FILTER_SANITIZE_STRING, FILTER_FORCE_ARRAY));
+    } else {
+        $value = sanitize_text_field(filter_input(INPUT_POST, 'value', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE));
+    }
 
     $params = [
         'user_id' => $user_id,

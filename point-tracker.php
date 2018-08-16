@@ -9,14 +9,14 @@
  * that starts the plugin.
  *
  * @link              https://github.com/godsgood33
- * @since             1.0.0
+ * @since             1.0
  * @package           Point_Tracker
  *
  * @wordpress-plugin
  * Plugin Name:       Point Tracker
  * Plugin URI:        https://github.com/godsgood33/point-tracker
  * Description:       Allow network marketing leaders to create challenges and let people track their points.
- * Version:           1.0.0
+ * Version:           1.1
  * Author:            Ryan Prather
  * Author URI:        https://github.com/godsgood33
  * License:           Apache-2.0
@@ -35,7 +35,7 @@ if (! defined('WPINC')) {
  * Start at version 2.1.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define('PT_PLUGIN_NAME_VERSION', '1.0.0');
+define('PT_PLUGIN_NAME_VERSION', '1.1');
 
 /**
  * The code that runs during plugin activation.

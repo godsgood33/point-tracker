@@ -5,6 +5,8 @@
  * Purpose: To display the challenge list to the user
  */
 global $wpdb;
+include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+
 $act_page = get_page_by_title("My Activity");
 $chal_page = get_page_by_title("Challenge");
 $chal_link = filter_input(INPUT_GET, 'chal', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);

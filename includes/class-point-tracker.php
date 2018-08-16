@@ -72,7 +72,7 @@ class Point_Tracker
         if (defined('PT_PLUGIN_NAME_VERSION')) {
             $this->version = PT_PLUGIN_NAME_VERSION;
         } else {
-            $this->version = '1.0.0';
+            $this->version = '1.1';
         }
         $this->plugin_name = 'point-tracker';
 
@@ -217,8 +217,8 @@ class Point_Tracker
         $req_login = (boolean) get_option('pt-require-login', 0);
         $now = new DateTime("now", new DateTimeZone(get_option('timezone_string')));
 
-        if(is_plugin_active('wordpress-seo/wp-seo.php')) {
-            wp_die("Yoast SEO currently has a conflict with Point Tracker.  Deactivate Yoast SEO first, activiate/deactivate Point Tracker, then reactivate Yoast SEO");
+        if(is_plugin_active('wordpress-seo/wp-seo.php') && !is_plugin_active('point-tracker/point-tracker.php')) {
+            wp_die("Point Tracker currently has a conflict with Yoast SEO.  Deactivate Yoast SEO first, activiate/deactivate Point Tracker, then reactivate Yoast SEO");
         } elseif($list && !$chal_link) {
             return null;
         }
