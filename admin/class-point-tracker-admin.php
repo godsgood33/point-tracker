@@ -83,9 +83,6 @@ class Point_Tracker_Admin
 
             wp_enqueue_style('datatables', plugin_dir_url(__DIR__) . "includes/datatables/DataTables-1.10.9/css/jquery.dataTables.min.css");
             wp_enqueue_style('dt-buttons', plugin_dir_url(__DIR__) . "includes/datatables/Buttons-1.0.3/css/buttons.dataTables.min.css");
-            wp_enqueue_style('dt-responsive', plugin_dir_url(__DIR__) . "includes/datatables/Responsive-1.0.7/css/responsive.dataTables.min.css");
-            wp_enqueue_style('dt-scroller', plugin_dir_url(__DIR__) . "includes/datatables/Scroller-1.3.0/css/scroller.dataTables.min.css");
-            wp_enqueue_style('dt-select', plugin_dir_url(__DIR__) . "includes/datatables/Select-1.0.1/css/select.dataTables.min.css");
 
             wp_enqueue_style('font-awesome', plugin_dir_url(__DIR__) . "includes/font-awesome/font-awesome-v5.2.0.min.css", [], $this->version, 'all');
         }
@@ -122,6 +119,7 @@ class Point_Tracker_Admin
             wp_enqueue_script('jquery-ui-core');
             wp_enqueue_script('jquery-ui-datepicker');
             wp_enqueue_script('jquery-ui-tooltip');
+            wp_enqueue_script('jquery-ui-dialog');
 
             wp_enqueue_script('spinner', plugin_dir_url(__DIR__) . 'includes/spin/spin.min.js', [], $this->version, false);
 
@@ -174,7 +172,7 @@ class Point_Tracker_Admin
             'display_participant_log_submenu_page'
         ));
 
-        add_options_page("PointTracker Settings", "PT Settings", "manage_options", "pt-settings", array(
+        add_options_page("Point Tracker Settings", "PT Settings", "manage_options", "pt-settings", array(
             $this,
             "display_admin_options_page"
         ));
@@ -195,7 +193,7 @@ class Point_Tracker_Admin
             "F j, Y" => "MMMM d, yy",
             "d/m/Y" => "dd/mm/yy"
         ];
-        return isset($arr["{$php_format}"]) ? $arr["{$php_format}"] : "Y-m-d";
+        return isset($arr["{$php_format}"]) ? $arr["{$php_format}"] : "yy-mm-dd";
     }
 
     /**

@@ -40,8 +40,8 @@ foreach($challenges as $chal) {
     <option value=''>-- Select Activity --</option>
   </select><br />
 
-  <input type='date' id='log-date' placeholder='Activity Date...' />&nbsp;&nbsp;
-  <input type='time' id='log-time' placeholder='Activity Time...' /><br />
+  <input type='date' id='log-date' placeholder='Date...' />&nbsp;&nbsp;
+  <input type='time' id='log-time' placeholder='Time...' /><br />
 
   <div id='activity-answer'></div>
 

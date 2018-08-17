@@ -97,7 +97,7 @@ function pt_save_challenge()
             'id' => $chal_id
         ]);
 
-        if (!$params['approval']) {
+        if (! $params['approval']) {
             $wpdb->update("{$wpdb->prefix}pt_participants", [
                 "approved" => 1
             ], [
@@ -108,7 +108,7 @@ function pt_save_challenge()
         $params['short_link'] = uniqid();
 
         $res = $wpdb->insert("{$wpdb->prefix}pt_challenges", $params);
-        if($res) {
+        if ($res) {
             $chal_id = $wpdb->insert_id;
         }
     }
@@ -158,21 +158,21 @@ function pt_delete_challenge()
     ]);
 
 	if($res) {
-		$activities = $wpdb->get_results($wpdb->prepare("SELECT id FROM `{$wpdb->prefix}pt_activities` WHERE challenge_id=%d", $chal_id));
+        $activities = $wpdb->get_results($wpdb->prepare("SELECT id FROM `{$wpdb->prefix}pt_activities` WHERE challenge_id=%d", $chal_id));
 
-		$wpdb->delete("{$wpdb->prefix}pt_activities", [
-			'challenge_id' => $chal_id
-		]);
-		$wpdb->delete("{$wpdb->prefix}pt_participants", [
-			'challenge_id' => $chal_id
-		]);
+        $wpdb->delete("{$wpdb->prefix}pt_activities", [
+            'challenge_id' => $chal_id
+        ]);
+        $wpdb->delete("{$wpdb->prefix}pt_participants", [
+            'challenge_id' => $chal_id
+        ]);
 
-		foreach ($activities as $act) {
-			$wpdb->delete("{$wpdb->prefix}pt_log", [
-				"activity_id" => $act
-			]);
-		}
-	}
+        foreach ($activities as $act) {
+            $wpdb->delete("{$wpdb->prefix}pt_log", [
+                "activity_id" => $act
+            ]);
+        }
+    }
 
 	print json_encode($res ? [
         'success' => 'Successfully deleted challenge'

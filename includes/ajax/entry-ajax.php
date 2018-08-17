@@ -28,6 +28,13 @@ function pt_get_log_table()
     }
 
     $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+    $chal = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_challenges WHERE id = %d", $chal_id));
+    if(!$chal) {
+        print json_encode([
+            'error' => 'Unable to find the selected challenge'
+        ]);
+        wp_die();
+    }
 
     $query = $wpdb->prepare("CREATE TEMPORARY TABLE tmp_log SELECT
 al.activity_id,al.log_date,al.log_time,al.value,ca.question,ca.points,cp.*
@@ -46,14 +53,14 @@ ORDER BY al.log_date,al.log_time";
 
     if (is_array($log_res) && count($log_res)) {
         foreach ($log_res as $log) {
-            $dt = new DateTime($log->log_date . " " . $log->log_time);
+            $dt = new DateTime($log->log_date . " " . $log->log_time, new DateTimeZone(get_option('timezone_string')));
             $_data[] = [
                 'id' => $log->member_id,
                 'name' => html_entity_decode($log->name, ENT_QUOTES | ENT_HTML5),
                 'activity' => html_entity_decode($log->question, ENT_QUOTES | ENT_HTML5),
                 'points' => $log->points,
-                'dt' => $dt->format(get_option('date_format', 'm/d/Y')),
-                'answer' => $log->value,
+                'dt' => $dt->format(get_option('date_format', 'Y-m-d')),
+                'answer' => html_entity_decode($log->value, ENT_QUOTES | ENT_HTML5),
                 'action' => "<i class='far fa-trash-alt' title='Delete this activity so you can reinput with the correct info' data-act-id='{$log->activity_id}' data-log-date='{$dt->format("Y-m-d")}' data-user-id='{$log->user_id}'></i>"
             ];
         }
@@ -201,13 +208,13 @@ WHERE ca.id = %d", $act_id);
     } // if login is not required and they aren't logged in, check for the presents of an account using their email
     elseif (! $req_login && ! $user_id) {
         $user_id = email_exists($user_email);
-        if(!$user_id) {
+        if (! $user_id) {
             $random_pwd = wp_generate_password();
             $user_id = wp_create_user($user_email, $random_pwd, $user_email);
         }
     }
 
-    if(! $user_id) {
+    if (! $user_id) {
         print json_encode([
             'error' => 'Unable to add you to the challenge'
         ]);
@@ -222,7 +229,7 @@ WHERE
     $part = $wpdb->get_row($query);
     $res = true;
 
-    if(!$part) {
+    if (! $part) {
         $res = $wpdb->insert("{$wpdb->prefix}pt_participants", [
             'challenge_id' => $chal->id,
             'user_id' => $user_id,
@@ -293,7 +300,7 @@ WHERE
                 ]);
                 wp_die();
             }
-            $amt = $value * $act->points;
+            $amt = ((int) $value) * ((int) $act->points);
             break;
         case 'radio':
             if (! strlen($value)) {
@@ -329,7 +336,7 @@ WHERE
         $query = $wpdb->prepare("SELECT COALESCE(SUM(total_points),0)
 FROM {$wpdb->prefix}point_totals
 WHERE user_id = %d", $user_id);
-        $total_points = $wpdb->get_var($query);
+        $total_points = (int) $wpdb->get_var($query);
 
         // check to see if their current points + current value exceeds the maximum allowed
         if (($total_points + $amt) > $act->chal_max) {
@@ -348,21 +355,13 @@ WHERE user_id = %d", $user_id);
 
     $res = $wpdb->insert("{$wpdb->prefix}pt_log", $params);
 
-    if ($res) {
-        if ($altered) {
-            print json_encode([
-                'warning' => "You have reached the maximum points allowed for this activity ({$act->chal_max}) so your points were altered"
-            ]);
-        } else {
-            print json_encode([
-                'success' => 'Activity was added'
-            ]);
-        }
-    } else {
-        print json_encode([
-            'error' => 'You have already recorded this activity for today'
-        ]);
-    }
+    print json_encode($res && $altered ? [
+        'warning' => "You have reached the maximum points allowed for this activity ({$act->chal_max}) so your points were altered"
+    ] : ($res ? [
+        'success' => 'Activity was added'
+    ] : [
+        'error' => 'You have already recorded this activity for today'
+    ]));
 
     wp_die();
 }
@@ -378,6 +377,7 @@ function pt_get_my_activity_table()
 {
     global $wpdb;
     $_data = [];
+    $tp = 0;
     $member_id = filter_input(INPUT_POST, 'member-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
     $email = sanitize_email(filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL, FILTER_NULL_ON_FAILURE));
     $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
@@ -390,12 +390,11 @@ WHERE
     email = %s", $chal_id, $member_id, $email);
     $uid = $wpdb->get_var($query);
 
-    if(!$uid) {
+    if (! $uid) {
         print json_encode([
             'error' => 'Failed to retrieve user id'
         ]);
-    }
-    else {
+    } else {
         $wpdb->query($wpdb->prepare("SET @challenge_id=%d", $chal_id));
         $tp = $wpdb->get_var($wpdb->prepare("SELECT SUM(total_points) FROM {$wpdb->prefix}leader_board WHERE user_id = %d", $uid));
 
@@ -412,7 +411,7 @@ ORDER BY
 
         $my_act = $wpdb->get_results($query);
 
-        foreach($my_act as $act) {
+        foreach ($my_act as $act) {
             $dt = new DateTime("{$act->log_date} {$act->log_time}", new DateTimeZone(get_option('timezone_string')));
             $_data[] = [
                 'name' => html_entity_decode($act->question, ENT_QUOTES | ENT_HTML5),
@@ -421,8 +420,9 @@ ORDER BY
                 'time' => $dt->format(get_option('time_format', 'H:i:s')),
                 'answer' => html_entity_decode($act->value, ENT_QUOTES | ENT_HTML5),
                 'action' => "<i class='far fa-trash-alt' title='Delete this activity so you can input the correct info' data-act-id='{$act->id}' data-log-date='{$act->log_date}' data-user-id='{$act->user_id}'></i>"
-                ];
+            ];
         }
+
         print json_encode([
             'total_points' => $tp,
             'columns' => [
@@ -475,7 +475,7 @@ function pt_delete_participant_activity()
 {
     global $wpdb;
 
-    if(!check_ajax_referer('pt-delete-entry', 'security', false)) {
+    if (! check_ajax_referer('pt-delete-entry', 'security', false)) {
         print json_encode([
             'error' => 'We were unable to verify the nonce'
         ]);
@@ -500,9 +500,9 @@ function pt_delete_participant_activity()
         'log_date' => $dt->format("Y-m-d")
     ]);
 
-    print json_encode($res !== false ? [
+    print json_encode($res ? [
         'success' => 'Activity was removed'
-    ]: [
+    ] : [
         'error' => "There was an error removing that activity, please contact the site admin " . get_option('admin-email', null)
     ]);
 

@@ -208,6 +208,7 @@ class Point_Tracker
      * @global wpdb $wpdb
      *
      * @param string $chal_link
+     * @param boolean $list
      *
      * @return stdClass
      */
@@ -216,6 +217,7 @@ class Point_Tracker
         global $wpdb;
         $req_login = (boolean) get_option('pt-require-login', 0);
         $now = new DateTime("now", new DateTimeZone(get_option('timezone_string')));
+        $list_page = get_page_by_title("Challenge List");
 
         if($list && !$chal_link) {
             return null;
@@ -258,6 +260,16 @@ class Point_Tracker
             wp_die("Challenge requires approval so you must <a href='" . wp_login_url() . "'>login</a> on this website", "ACCOUNT_REQUIRED", [
                 'response' => 301
             ]);
+        }
+
+        if(is_user_logged_in()) {
+            if (! Point_Tracker::is_user_in_challenge($chal->id, get_current_user_id()) && $chal->approval) {
+                header("Location: {$list_page->guid}?chal={$chal_link}");
+            } elseif (! Point_Tracker::is_participant_approved($chal->id, get_current_user_id()) && $chal->approval) {
+                wp_die("You have not been approved to access this challenge yet", "You shall not pass!", [
+                    'response' => 301
+                ]);
+            }
         }
 
         return $chal;

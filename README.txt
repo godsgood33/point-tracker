@@ -13,7 +13,7 @@ This plugin will allow site admins to create challenges and then participants ca
 
 == Description ==
 
-This plugin does not require but works well with membership plugins.  The admin can create a challenge, share the challenge link with whom they wish.  Those wishing to participate can click on the link and opt to join the challenge. Once the participant has joined the challenge, they can enter activity against that challenge upto daily and receive points. Leader boards are available if the admin opts to have the system make one available.
+This plugin does not require but works well with membership plugins.  The admin can create a challenge, share the challenge link with whom they wish.  Those wishing to participate can click on the link and opt to join the challenge. Once the participant has joined the challenge, they can enter activity against that challenge upto daily and receive points.
 
 == Installation ==
 

@@ -40,7 +40,7 @@ foreach($challenges as $chal) {
 <a href='javascript:void(0);' id='add-challenge-participant'>Add Participant</a>
 
 <div id='admin-add-participant'>
-	<input type='text' id='member-id' placeholder='Member ID...' /><br />
+	<input type='text' id='member-id' placeholder='Member ID...' inputmode='numeric' pattern='[0-9]*' /><br />
 	<input type='text' id='user-name' placeholder='Name...' /><br />
 	<input type='email' id='user-email' placeholder='Email...' /><br />
 	<input type='button' id='add-participant' value='Add Participant' />

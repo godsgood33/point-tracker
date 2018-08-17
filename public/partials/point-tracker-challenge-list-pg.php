@@ -5,7 +5,6 @@
  * Purpose: To display the challenge list to the user
  */
 global $wpdb;
-include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
 $act_page = get_page_by_title("My Activity");
 $chal_page = get_page_by_title("Challenge");
@@ -94,17 +93,17 @@ if (is_user_logged_in()) {
         $link = ($chal->approved ? "<a href='{$chal_page->guid}?chal={$chal->short_link}'>{$chal->short_link}</a>" : "{$chal->short_link}");
         $approved = ($chal->approved ? "Yes" : "No");
         print <<<EOR
-    <tr>
-        <td>{$name}</td>
-        <td>$link<br />
-            <a href='{$act_page->guid}?chal={$chal->short_link}'>My Activity</a>
-        </td>
-        <td>$approved</td>
-        <td>$desc</td>
-    </tr>
+<tr>
+    <td>{$name}</td>
+    <td>$link<br />
+        <a href='{$act_page->guid}?chal={$chal->short_link}'>My Activity</a>
+    </td>
+    <td>$approved</td>
+    <td>$desc</td>
+</tr>
 EOR;
-    }
-    ?>
+}
+?>
 	</tbody>
 </table>
 
@@ -128,16 +127,16 @@ EOR;
         $starts = new DateTime($chal->start, new DateTimeZone(get_option('timezone_string')));
         $approved = ($chal->approved ? "Yes" : "No");
         print <<<EOR
-    <tr>
-        <td>{$name}</td>
-        <td>{$chal->short_link}</td>
-        <td>$approved</td>
-        <td>{$starts->format('M j, y')}</td>
-        <td>$desc</td>
-    </tr>
+<tr>
+    <td>{$name}</td>
+    <td>{$chal->short_link}</td>
+    <td>$approved</td>
+    <td>{$starts->format(get_option('date_format', 'Y-m-d')}</td>
+    <td>$desc</td>
+</tr>
 EOR;
-    }
-    ?>
+}
+?>
 	</tbody>
 </table>
 
@@ -164,8 +163,8 @@ EOR;
     <td>{$desc}</td>
 </tr>
 EOR;
-    }
-    ?>
+}
+?>
 	</tbody>
 </table>
 

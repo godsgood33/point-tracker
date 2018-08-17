@@ -24,10 +24,7 @@ class Point_Tracker_Activator
 {
 
     /**
-     * Short Description.
-     * (use period)
-     *
-     * Long Description.
+     * Activation method
      *
      * @since 1.0.0
      */

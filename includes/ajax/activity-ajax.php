@@ -114,7 +114,7 @@ function pt_get_activity_details()
 
     if(!$act) {
         print json_encode([
-            'error' => 'Unable to find that activity'
+            'error' => 'Unable to find the selected activity'
         ]);
         wp_die();
     }
@@ -152,7 +152,11 @@ function pt_save_activity()
     $act_id = filter_input(INPUT_POST, 'act-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
     $pts = filter_input(INPUT_POST, 'points', FILTER_VALIDATE_FLOAT, FILTER_NULL_ON_FAILURE);
     $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-    $type = filter_input(INPUT_POST, 'type', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => "/checkbox|number|radio|text/"]]);
+    $type = filter_input(INPUT_POST, 'type', FILTER_VALIDATE_REGEXP, [
+        'options' => [
+            'regexp' => "/checkbox|number|radio|text/"
+        ]
+    ]);
     $ques = sanitize_text_field(filter_input(INPUT_POST, 'question', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE));
     $desc = sanitize_text_field(filter_input(INPUT_POST, 'desc', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE));
     $order = filter_input(INPUT_POST, 'order', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
@@ -174,7 +178,7 @@ function pt_save_activity()
         wp_die();
     }
 
-    $query = $wpdb->prepare("SELECT COUNT(1) FROM {$wpdb->prefix}pt_activities WHERE name = %s AND challenge_id = %d", $name, $chal_id);
+    $query = $wpdb->prepare("SELECT COUNT(1) FROM {$wpdb->prefix}pt_activities WHERE name = %s AND challenge_id = %d AND id != %d", $name, $chal_id, $act_id);
     $count = $wpdb->get_var($query);
     if($count) {
         print json_encode([
@@ -245,7 +249,9 @@ function pt_delete_activity()
         'id' => $act_id
     ]);
 
-    $wpdb->delete("{$wpdb->prefix}pt_log", ['activity_id' => $act_id]);
+    $wpdb->delete("{$wpdb->prefix}pt_log", [
+        'activity_id' => $act_id
+    ]);
 
     print json_encode($res !== false ? [
         'success' => "Successfully delete the activity"
@@ -300,7 +306,7 @@ function pt_validate_activity(&$act)
         'radio'
     ])) {
         $label = filter_input(INPUT_POST, 'label', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
-        if (!$label) {
+        if (! $label) {
             $act['error'] .= 'Invalid label for answer options<br />';
             $ret = false;
         } else {
@@ -312,14 +318,14 @@ function pt_validate_activity(&$act)
     ])) {
         $min = filter_input(INPUT_POST, 'min', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
         $max = filter_input(INPUT_POST, 'max', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-        if (!is_numeric($min)) {
+        if (! is_numeric($min)) {
             $act['error'] .= 'Invalid value for activity min<br />';
             $ret = false;
         } else {
             $act['min'] = $min;
         }
 
-        if (!is_numeric($max)) {
+        if (! is_numeric($max)) {
             $act['error'] .= 'Invalid value for activity max<br />';
             $ret = false;
         } else {

@@ -149,9 +149,6 @@ class Point_Tracker_Public
             wp_enqueue_script('dt-buttons', plugin_dir_url(__DIR__) . "includes/datatables/Buttons-1.0.3/js/dataTables.buttons.min.js");
             wp_enqueue_script('dt-buttons-html5', plugin_dir_url(__DIR__) . "includes/datatables/Buttons-1.0.3/js/buttons.html5.min.js");
             wp_enqueue_script('dt-buttons-print', plugin_dir_url(__DIR__) . "includes/datatables/Buttons-1.0.3/js/buttons.print.min.js");
-            wp_enqueue_script('dt-responsive', plugin_dir_url(__DIR__) . "includes/datatables/Responsive-1.0.7/js/dataTables.responsive.min.js");
-            wp_enqueue_script('dt-scroller', plugin_dir_url(__DIR__) . "includes/datatables/Scroller-1.3.0/js/dataTables.scroller.min.js");
-            wp_enqueue_script('dt-select', plugin_dir_url(__DIR__) . "includes/datatables/Select-1.0.1/js/dataTables.select.min.js");
         }
     }
 

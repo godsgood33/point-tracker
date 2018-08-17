@@ -21,12 +21,12 @@ function pt_get_participant_table()
     $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
     $chal = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_challenges WHERE id = %d", $chal_id));
 
-	if(!$chal) {
-		print json_encode([
-			'error' => 'Unable to find the selected challenge'
-		]);
-		wp_die();
-	}
+    if (! $chal) {
+        print json_encode([
+            'error' => 'Unable to find the selected challenge'
+        ]);
+        wp_die();
+    }
 
     $query = $wpdb->prepare("CREATE TEMPORARY TABLE tmp_log
 SELECT IF(ca.type = 'number',(ca.points * al.value),ca.points) AS 'total_points',cp.*
@@ -155,7 +155,7 @@ function pt_remove_participant()
             'error' => 'You are not the coordinator of this challenge (access denied)'
         ]);
         wp_die();
-    } elseif(!check_ajax_referer('pt-delete-participant', 'security', false)) {
+    } elseif (! check_ajax_referer('pt-delete-participant', 'security', false)) {
         print json_encode([
             'error' => 'We were unable to verify the nonce'
         ]);
@@ -214,10 +214,18 @@ function pt_add_participant()
         wp_die();
     }
 
+    $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+    $chal = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_challenges WHERE id = %d", $chal_id));
+    if(!$chal) {
+        print json_encode([
+            'error' => 'Unable to find the selected challenge'
+        ]);
+        wp_die();
+    }
+
     $member_id = filter_input(INPUT_POST, 'member-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
     $name = sanitize_text_field(filter_input(INPUT_POST, 'user-name', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE));
     $email = sanitize_email(filter_input(INPUT_POST, 'user-email', FILTER_SANITIZE_EMAIL, FILTER_NULL_ON_FAILURE));
-    $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
     $now = new DateTime("now", new DateTimeZone(get_option("timezone_string")));
 
     if (! $member_id) {
@@ -237,8 +245,6 @@ function pt_add_participant()
         wp_die();
     }
 
-    $chal = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_challenges WHERE id = %d", $chal_id));
-
     if ($uid = email_exists($email)) {
         $res = $wpdb->insert("{$wpdb->prefix}pt_participants", [
             'challenge_id' => $chal_id,
@@ -252,9 +258,8 @@ function pt_add_participant()
         ]);
     } else {
         // generate a random password and create an account
-        $user_name = str_replace(' ', '.', trim(strtolower($name)));
         $random_pwd = wp_generate_password();
-        $uid = wp_create_user($user_name, $random_pwd, $email);
+        $uid = wp_create_user($email, $random_pwd, $email);
 
         $res = $wpdb->insert("{$wpdb->prefix}pt_participants", [
             'challenge_id' => $chal_id,
@@ -268,23 +273,21 @@ function pt_add_participant()
         ]);
     }
 
-    if ($res) {
-        print json_encode([
-            'success' => 'Successfully added participant',
-            'user_id' => $uid
-        ]);
-    } else {
-        print json_encode([
-            'error' => $wpdb->last_error
-        ]);
-    }
+    print json_encode($res ? [
+        'success' => 'Successfully added participant',
+        'user_id' => $uid,
+        'name' => $name,
+        'email' => $email
+    ] : [
+        'error' => $wpdb->last_error
+    ]);
 
     wp_mail("{$name} <{$email}>", "Added to challenge", str_replace([
         "{name}",
         "{desc}"
     ], [
-        $chal->name,
-        $chal->desc
+        html_entity_decode($chal->name, ENT_QUOTES | ENT_HTML5),
+        html_entity_decode($chal->desc, ENT_QUOTES | ENT_HTML5)
     ], PT_USER_ADDED));
 
     wp_die();
