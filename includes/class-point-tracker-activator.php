@@ -43,7 +43,7 @@ class Point_Tracker_Activator
             // create page with template
             $post_id = wp_insert_post(array(
                 'post_title' => 'Challenge',
-                'post_content' => "[challenge_page]",
+                'post_content' => "[challenge]",
                 'post_status' => 'publish',
                 'post_author' => 1,
                 'post_type' => 'page',
@@ -52,7 +52,7 @@ class Point_Tracker_Activator
         } else {
             // make sure the page is not trashed...
             $the_page->post_status = 'publish';
-            $the_page->post_content = "[challenge_page]";
+            $the_page->post_content = "[challenge]";
             $the_page->guid = "{$site_url}/index.php/challenge/";
             $post_id = wp_update_post($the_page);
         }

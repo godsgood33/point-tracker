@@ -32,7 +32,7 @@ function pt_get_participant_table()
 SELECT IF(ca.type = 'number',(ca.points * al.value),ca.points) AS 'total_points',cp.*
 FROM {$wpdb->prefix}pt_participants cp
 LEFT JOIN {$wpdb->prefix}pt_log al ON al.user_id = cp.user_id
-LEFT JOIN {$wpdb->prefix}pt_activities ca on ca.id = al.activity_id
+LEFT JOIN {$wpdb->prefix}pt_activities ca on ca.id = al.activity_id AND ca.challenge_id = cp.challenge_id
 WHERE cp.challenge_id = %d
 GROUP BY cp.user_id, al.activity_id, al.log_date", $chal_id);
     $wpdb->query($query);

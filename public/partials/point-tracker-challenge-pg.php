@@ -14,6 +14,11 @@ global $wpdb;
 
 $req_login = (boolean) get_option('pt-require-login', 0);
 $chal_link = filter_input(INPUT_GET, 'chal', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
+
+if(!$chal_link) {
+    $chal_link = filter_var(Point_Tracker_Public::$chal, FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
+}
+
 $chal = Point_Tracker::init($chal_link);
 
 $prev = '';

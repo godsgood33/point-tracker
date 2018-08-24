@@ -42,6 +42,13 @@ class Point_Tracker_Public
     private $version;
 
     /**
+     * Variable to temporarily store the challenge unique ID
+     *
+     * @var string
+     */
+    public static $chal = '';
+
+    /**
      * Initialize the class and set its properties.
      *
      * @since 1.0.0
@@ -55,7 +62,7 @@ class Point_Tracker_Public
         $this->plugin_name = $plugin_name;
         $this->version = $version;
 
-        add_shortcode('challenge_page', [
+        add_shortcode('challenge', [
             $this,
             'display_challenge_page'
         ]);
@@ -172,9 +179,18 @@ class Point_Tracker_Public
 
     /**
      * Function to display the challenge data
+     *
+     * @param array $attrs
+     * @param string $content
+     * @param string $tag
      */
-    public function display_challenge_page()
+    public function display_challenge_page($attrs = [], $content = null, $tag = '')
     {
+        $attrs = array_change_key_case((array) $attrs, CASE_LOWER);
+        if(is_array($attrs) && count($attrs) && isset($attrs['chal'])) {
+            self::$chal = $attrs['chal'];
+        }
+
         include_once ('partials/point-tracker-challenge-pg.php');
     }
 
@@ -188,9 +204,18 @@ class Point_Tracker_Public
 
     /**
      * Function to display user activity
+     *
+     * @param array $attrs
+     * @param string $content
+     * @param string $tag
      */
-    public function display_activity_page()
+    public function display_activity_page($attrs = [], $content = null, $tag = '')
     {
+        $attrs = array_change_key_case((array) $attrs, CASE_LOWER);
+        if(is_array($attrs) && count($attrs) && isset($attrs['chal'])) {
+            self::$chal = $attrs['chal'];
+        }
+
         include_once ('partials/point-tracker-my-activity-pg.php');
     }
 }

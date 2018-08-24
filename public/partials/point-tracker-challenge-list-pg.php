@@ -131,7 +131,7 @@ EOR;
     <td>{$name}</td>
     <td>{$chal->short_link}</td>
     <td>$approved</td>
-    <td>{$starts->format(get_option('date_format', 'Y-m-d')}</td>
+    <td>{$starts->format(get_option('date_format', 'Y-m-d'))}</td>
     <td>$desc</td>
 </tr>
 EOR;
