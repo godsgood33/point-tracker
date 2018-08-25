@@ -59,13 +59,13 @@ foreach($challenges as $chal) {
 		class='tooltip-field' title='Start date for the challenge' />
 </div>
 <div>
-	<input type='text' id='end-date' placeholder='End Date...' 
+	<input type='text' id='end-date' placeholder='End Date...'
 		class='tooltip-field' title='End date for the challenge' />
 </div>
-<div>
-	<input type='checkbox' id='approval' class='tooltip-field'
-		title='Do you want to approve requests to join the challenge (requires account)' />
-    <label for='approval'>Approval Required?</label>	
+<div class='tooltip-field'
+        title='Do you want to approve requests to join the challenge (requires account)'>
+	<input type='checkbox' id='approval' />
+    <label for='approval'>Approval Required?</label>
 </div>
 <div>
 	Link:&nbsp;&nbsp; <span id='link' class='tooltip-field'

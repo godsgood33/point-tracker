@@ -262,7 +262,7 @@ class Point_Tracker
             ]);
         }
 
-        if(is_user_logged_in()) {
+        if(is_user_logged_in() && !$list) {
             if (! Point_Tracker::is_user_in_challenge($chal->id, get_current_user_id()) && $chal->approval) {
                 header("Location: {$list_page->guid}?chal={$chal_link}");
             } elseif (! Point_Tracker::is_participant_approved($chal->id, get_current_user_id()) && $chal->approval) {
