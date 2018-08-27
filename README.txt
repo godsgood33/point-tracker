@@ -5,7 +5,7 @@ Tags: team activities, challenge, content
 Requires at least: 4.4.2
 Requires PHP: 5.6
 Tested up to: 4.9.8
-Stable tag: 1.3
+Stable tag: 1.3.1
 License: Apache-2.0
 License URI: https://www.apache.org/licenses/LICENSE-2.0
 
@@ -21,7 +21,7 @@ This section describes how to install the plugin and get it working.
 
 1. Extract the 'point-tracker.zip' file in the '/wp-content/plugins/' directory or install using the plugin installer in WP
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. The Point Tracker admin menu is used to administer the challenges, its activitie, and participants.
+3. The Point Tracker admin menu is used to administer the challenges, its activities, and participants.
 4. Navigate to the Point Tracker -> Point Tracker admin menu
 5. Fill out the form and create a challenge (add a name, start and end dates, and a description) then click "Save"
 6. Copy the link that appears just above the description box
@@ -51,6 +51,10 @@ You will need to visit the Point Tracker -> Participants page to see who has the
 
 You can either delete it yourself or if they visit the View My Activity page (/my-activity/?chal={linkcode}), they will be able to delete it themselves
 
+= How can I create a custom page =
+
+After you've created a challenge, copy the unique code for that challenge.  Create a new page at Pages -> Add New.  Give it a name and whatever content you'd like.  Then where you'd like to put the challenge form simply type `[challenge chal={challenge code you copied}][/challenge]`, then publish the page.  That is all.
+
 = I'd like a leader board =
 
 One will be available in Point Tracker Pro releasing soon
@@ -77,6 +81,15 @@ One will be available in Point Tracker Pro releasing soon
 = 1.2 =
 * More bug fixes
 * Fixed incompatibility with plugins that have a save_post hook
+
+= 1.3 =
+* Changed shortcode to [challenge] instead of [challenge_page]
+* Added "chal" parameter to shortcode to allow for creating custom pages
+* Bug fixes
+
+= 1.3.1 =
+* Set the challenge end date to be no earlier than the start date (can't end before you start)
+* Fixed bug in showing challenge list
 
 == Upgrade Notice ==
 

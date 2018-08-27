@@ -125,8 +125,8 @@ LIMIT 1", get_current_user_id(), $act->id);
                 $label = esc_attr($label);
 
                 print <<<EOR
-<label for='$id'>$label</label>&nbsp;&nbsp;
-<input type='{$act->type}' class='value' id='$id' value='$label' /><br />
+<input type='{$act->type}' class='value' id='$id' value='$label' />&nbsp;&nbsp;
+<label for='$id'>$label</label><br />
 EOR;
             }
         } else {
@@ -137,8 +137,10 @@ EOR;
             $max = ($act->type == 'text' && $act->max ? "maxlength='{$act->max}'" : $max);
 
             $inputmode = ($act->type == 'number' ? " inputmode='numeric' pattern='[0-9]*'" : null);
+            $text_max = ($act->type == 'text' && $act->max ? " text-max" : null);
 
-            print "<input type='{$act->type}' class='value' id='$id'$inputmode $min $max $val />&nbsp;&nbsp;";
+            print "<input type='{$act->type}' class='value$text_max' id='$id'$inputmode $min $max $val />&nbsp;&nbsp;";
+            print ($act->type == 'text' && $act->max ? "<br />(<span id='text-len-{$id}'>0</span> / {$act->max})" : null);
         }
 
         $prev = $id;
@@ -219,8 +221,8 @@ LIMIT 1", get_current_user_id(), $act->id);
                 $label = esc_attr($label);
 
                 print <<<EOR
-<label for='$id'>$label</label>&nbsp;&nbsp;
-<input type='{$act->type}' class='value' id='$id' value='$label' /><br />
+<input type='{$act->type}' class='value' id='$id' value='$label' />&nbsp;&nbsp;
+<label for='$id'>$label</label><br />
 EOR;
             }
         } else {
@@ -231,8 +233,10 @@ EOR;
             $max = ($act->type == 'text' && $act->max ? "maxlength='{$act->max}'" : $max);
 
             $inputmode = ($act->type == 'number' ? " inputmode='numeric' pattern='[0-9]*'" : null);
+            $text_max = ($act->type == 'text' && $act->max ? " text-max" : null);
 
-            print "<input type='{$act->type}' class='value' id='$id'$inputmode $min $max $val />&nbsp;&nbsp;";
+            print "<input type='{$act->type}' class='value$text_max' id='$id'$inputmode $min $max $val />&nbsp;&nbsp;";
+            print ($act->type == 'text' && $act->max ? "<br />(<span id='text-len-{$id}'>0</span> / {$act->max})" : null);
         }
 
         $prev = $id;
