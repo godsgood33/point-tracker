@@ -138,7 +138,7 @@ class Point_Tracker_Activator
       `name` varchar(60) NOT NULL,
       `points` decimal(4,1) DEFAULT NULL,
       `type` enum('checkbox','radio','text','number') NOT NULL,
-      `label` varchar(45) DEFAULT NULL,
+      `label` text DEFAULT NULL,
       `question` varchar(100) DEFAULT NULL,
       `min` int(11) DEFAULT '0',
       `max` int(11) DEFAULT '0',
@@ -175,7 +175,7 @@ class Point_Tracker_Activator
       `activity_id` int(11) NOT NULL,
       `log_date` date NOT NULL,
       `log_time` time NOT NULL,
-      `value` varchar(255) NOT NULL DEFAULT '',
+      `value` mediumtext NOT NULL DEFAULT '',
       PRIMARY KEY (`user_id`,`activity_id`,`log_date`)
     )";
         dbDelta($query);

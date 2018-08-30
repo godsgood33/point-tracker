@@ -132,7 +132,7 @@ function pt_participant_save_entry()
     ]);
     $member_id = filter_input(INPUT_POST, 'member-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
     $user_name = sanitize_text_field(filter_input(INPUT_POST, 'user-name', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE));
-    $user_email = sanitize_email(filter_input(INPUT_POST, 'user-email', FILTER_VALIDATE_EMAIL, FILTER_NULL_ON_FAILURE));
+    $user_email = strtolower(sanitize_email(filter_input(INPUT_POST, 'user-email', FILTER_VALIDATE_EMAIL, FILTER_NULL_ON_FAILURE)));
 
     if (! $member_id) {
         print json_encode([
@@ -379,7 +379,7 @@ function pt_get_my_activity_table()
     $_data = [];
     $tp = 0;
     $member_id = filter_input(INPUT_POST, 'member-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-    $email = sanitize_email(filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL, FILTER_NULL_ON_FAILURE));
+    $email = strtolower(sanitize_email(filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL, FILTER_NULL_ON_FAILURE)));
     $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
 
     $query = $wpdb->prepare("SELECT user_id

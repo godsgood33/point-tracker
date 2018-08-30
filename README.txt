@@ -53,7 +53,7 @@ You can either delete it yourself or if they visit the View My Activity page (/m
 
 = How can I create a custom page =
 
-After you've created a challenge, copy the unique code for that challenge.  Create a new page at Pages -> Add New.  Give it a name and whatever content you'd like.  Then where you'd like to put the challenge form simply type `[challenge chal={challenge code you copied}][/challenge]`, then publish the page.  That is all.
+After you've created a challenge, copy the unique code for that challenge.  Create a new page at Pages -> Add New.  Give it a name and whatever content you'd like.  Then where you'd like to put the challenge form simply type `[challenge chal={challenge code you copied}][/challenge]`, then publish the page.  That is all.  You can also create an activity page using the shortcode `[my_activity chal={code}][/my_activity]`.
 
 = I'd like a leader board =
 

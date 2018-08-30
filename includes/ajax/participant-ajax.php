@@ -225,7 +225,7 @@ function pt_add_participant()
 
     $member_id = filter_input(INPUT_POST, 'member-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
     $name = sanitize_text_field(filter_input(INPUT_POST, 'user-name', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE));
-    $email = sanitize_email(filter_input(INPUT_POST, 'user-email', FILTER_SANITIZE_EMAIL, FILTER_NULL_ON_FAILURE));
+    $email = strtolower(sanitize_email(filter_input(INPUT_POST, 'user-email', FILTER_SANITIZE_EMAIL, FILTER_NULL_ON_FAILURE)));
     $now = new DateTime("now", new DateTimeZone(get_option("timezone_string")));
 
     if (! $member_id) {
@@ -318,7 +318,7 @@ function pt_join_challenge()
     }
 
     $name = sanitize_text_field(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE));
-    $email = sanitize_email(filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL, FILTER_NULL_ON_FAILURE));
+    $email = strtolower(sanitize_email(filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL, FILTER_NULL_ON_FAILURE)));
 
     $now = new DateTime("now", new DateTimeZone(get_option("timezone_string")));
 
