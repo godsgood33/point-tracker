@@ -172,6 +172,11 @@ class Point_Tracker_Admin
             'display_participant_log_submenu_page'
         ));
 
+        add_submenu_page('point-tracker-menu', 'Upgrade!', 'Upgrade!', 'manage_options', 'point-tracker-upgrade', [
+            $this,
+            'display_upgrade_page'
+        ]);
+
         add_options_page("Point Tracker Settings", "PT Settings", "manage_options", "pt-settings", array(
             $this,
             "display_admin_options_page"
@@ -190,7 +195,7 @@ class Point_Tracker_Admin
             "Y-m-d" => "yy-mm-dd",
             "m/d/Y" => "mm/dd/yy",
             "M j, Y" => "M d, yy",
-            "F j, Y" => "MMMM d, yy",
+            "F j, Y" => "MM d, yy",
             "d/m/Y" => "dd/mm/yy"
         ];
         return isset($arr["{$php_format}"]) ? $arr["{$php_format}"] : "yy-mm-dd";
@@ -228,6 +233,15 @@ class Point_Tracker_Admin
     public function display_participant_log_submenu_page()
     {
         include_once ('partials/point-tracker-log-pg.php');
+    }
+
+
+    public function display_upgrade_page()
+    {
+        print <<<EOL
+<h2>Upgrade to Point Tracker Pro</h2>
+<p>Take your challenges to the next level with <a href='' target='_blank'>Point Tracker Pro</a></p>
+EOL;
     }
 
     /**

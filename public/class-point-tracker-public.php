@@ -171,7 +171,7 @@ class Point_Tracker_Public
             "Y-m-d" => "yy-mm-dd",
             "m/d/Y" => "mm/dd/yy",
             "M j, Y" => "M d, yy",
-            "F j, Y" => "MMMM d, yy",
+            "F j, Y" => "MM d, yy",
             "d/m/Y" => "dd/mm/yy"
         ];
         return in_array($php_format, $arr) ? $arr["{$php_format}"] : "yy-mm-dd";
