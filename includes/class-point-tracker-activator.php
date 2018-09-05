@@ -129,7 +129,7 @@ class Point_Tracker_Activator
         dbDelta($query);
         $res = $wpdb->get_row("SHOW TABLES LIKE '{$wpdb->prefix}pt_challenges'", ARRAY_N);
         if (! is_array($res) || ! count($res)) {
-            return new WP_Error('db_failure', "Failed to create table '{$wpdb->prefix}pt_challenges");
+            return new WP_Error('db_failure', "Failed to create table {$wpdb->prefix}pt_challenges");
         }
 
         $query = "CREATE TABLE `{$wpdb->prefix}pt_activities` (
@@ -138,7 +138,7 @@ class Point_Tracker_Activator
       `name` varchar(60) NOT NULL,
       `points` decimal(4,1) DEFAULT NULL,
       `type` enum('checkbox','radio','text','number') NOT NULL,
-      `label` text DEFAULT NULL,
+      `label` mediumtext DEFAULT NULL,
       `question` varchar(100) DEFAULT NULL,
       `min` int(11) DEFAULT '0',
       `max` int(11) DEFAULT '0',
@@ -150,7 +150,7 @@ class Point_Tracker_Activator
         dbDelta($query);
         $res = $wpdb->get_row("SHOW TABLES LIKE '{$wpdb->prefix}pt_activities'", ARRAY_N);
         if (! is_array($res) || ! count($res)) {
-            return new WP_Error('db_failure', "Failed to create table '{$wpdb->prefix}pt_activities");
+            return new WP_Error('db_failure', "Failed to create table {$wpdb->prefix}pt_activities");
         }
 
         $query = "CREATE TABLE `{$wpdb->prefix}pt_participants` (
@@ -167,7 +167,7 @@ class Point_Tracker_Activator
         dbDelta($query);
         $res = $wpdb->get_row("SHOW TABLES LIKE '{$wpdb->prefix}pt_participants'", ARRAY_N);
         if (! is_array($res) || ! count($res)) {
-            return new WP_Error('db_failure', "Failed to create table '{$wpdb->prefix}pt_participants");
+            return new WP_Error('db_failure', "Failed to create table {$wpdb->prefix}pt_participants");
         }
 
         $query = "CREATE TABLE `{$wpdb->prefix}pt_log` (
@@ -175,13 +175,13 @@ class Point_Tracker_Activator
       `activity_id` int(11) NOT NULL,
       `log_date` date NOT NULL,
       `log_time` time NOT NULL,
-      `value` mediumtext NOT NULL DEFAULT '',
+      `value` text NOT NULL DEFAULT '',
       PRIMARY KEY (`user_id`,`activity_id`,`log_date`)
     )";
         dbDelta($query);
         $res = $wpdb->get_row("SHOW TABLES LIKE '{$wpdb->prefix}pt_log'", ARRAY_N);
         if (! is_array($res) || ! count($res)) {
-            return new WP_Error('db_failure', "Failed to create table '{$wpdb->prefix}pt_log");
+            return new WP_Error('db_failure', "Failed to create table {$wpdb->prefix}pt_log");
         }
     }
 
