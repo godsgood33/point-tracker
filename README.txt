@@ -5,7 +5,7 @@ Tags: team activities, challenge, content
 Requires at least: 4.4.2
 Requires PHP: 5.6
 Tested up to: 4.9.8
-Stable tag: 1.3.1
+Stable tag: 1.4
 License: Apache-2.0
 License URI: https://www.apache.org/licenses/LICENSE-2.0
 
@@ -90,6 +90,13 @@ One will be available in Point Tracker Pro releasing soon
 = 1.3.1 =
 * Set the challenge end date to be no earlier than the start date (can't end before you start)
 * Fixed bug in showing challenge list
+
+= 1.4 =
+* Fix bug in admin with start and end date formats
+* Add documentation for creating custom challenge and activity pages
+* Add Upgrade admin submenu (not linked right now)
+* Extended the size of the label for radio buttons and checkboxes and answer
+* Added a span below text fields to show character count
 
 == Upgrade Notice ==
 
