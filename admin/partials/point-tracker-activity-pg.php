@@ -47,6 +47,7 @@ foreach($challenges as $chal) {
     <option value='number'>Number</option>
     <option value='radio'>Radio</option>
     <option value='text'>Text</option>
+    <option value='long-text'>Long Text</option>
 </select><br />
 <div id='activity'>
 	<div class='onefourth'>
@@ -85,6 +86,17 @@ foreach($challenges as $chal) {
             title='Numeric value of the maximum amount points allowed during the whole challenge' /><br />
 	</div>
 
+    <div class='onefourth'>
+        <label for='act-group'>Group:</label>
+        <input type='text'
+            class='act-group tooltip-field' id='act-group' placeholder='Group...'
+            title='Do you want to group this activity so that they are organized together?' /><br />
+
+        <input type='checkbox' class='act-hidden tooltip-field' id='act-hidden' value='1'
+            title='Do you want to hide the results of this activity from point totals?' />
+        &nbsp;&nbsp;<label for='act-hidden'>Hidden?</label>
+    </div>
+
 	<div class='onefourth'>
         <label for='act-label'>Labels:</label>
 		<input type='text'
@@ -104,9 +116,6 @@ foreach($challenges as $chal) {
             placeholder='Max...'
             title='Numeric value of the maximum amount allowed/day (for text activities this is the max allowed text length)' />
 	</div>
-
-    <div class='onefourth'>
-    </div>
 </div>
 
 <table id='activity-table'></table>

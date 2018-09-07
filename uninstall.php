@@ -20,7 +20,7 @@
  * https://github.com/tommcfarlin/WordPress-Plugin-Boilerplate/pull/123#issuecomment-28541913
  *
  * @link       https://github.com/godsgood33
- * @since      2.1.0
+ * @since      1.0
  *
  * @package    Point_Tracker
  */
@@ -29,6 +29,8 @@
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
+
+delete_option('pt-require-login');
 
 // drop tables, views, and SQL functions
 global $wpdb;

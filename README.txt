@@ -5,7 +5,7 @@ Tags: team activities, challenge, content
 Requires at least: 4.4.2
 Requires PHP: 5.6
 Tested up to: 4.9.8
-Stable tag: 1.4
+Stable tag: 1.5
 License: Apache-2.0
 License URI: https://www.apache.org/licenses/LICENSE-2.0
 
@@ -51,6 +51,14 @@ You will need to visit the Point Tracker -> Participants page to see who has the
 
 You can either delete it yourself or if they visit the View My Activity page (/my-activity/?chal={linkcode}), they will be able to delete it themselves
 
+= What is a "hidden" activity? =
+
+This is an activity that will not be scored.  The points will be defaulted to 0.  They will also not be displayed on any public displays other than the challenge form asking the user for their answer.  They are ideal for collecting information like feedback that you don't necessarily want to reward.
+
+= What is an activity "group" =
+
+Activity groups allow you to group the activities into sections with a header.  This allow the participants to more easily find the questions they are wanting to answer.  They are optional.
+
 = How can I create a custom page =
 
 After you've created a challenge, copy the unique code for that challenge.  Create a new page at Pages -> Add New.  Give it a name and whatever content you'd like.  Then where you'd like to put the challenge form simply type `[challenge chal={challenge code you copied}][/challenge]`, then publish the page.  That is all.  You can also create an activity page using the shortcode `[my_activity chal={code}][/my_activity]`.
@@ -71,25 +79,9 @@ One will be available in Point Tracker Pro releasing soon
 
 == Changelog ==
 
-= 1.0 =
-* Initial release
-
-= 1.1 =
-* Couple bug fixes
-* Add screenshots
-
-= 1.2 =
-* More bug fixes
-* Fixed incompatibility with plugins that have a save_post hook
-
-= 1.3 =
-* Changed shortcode to [challenge] instead of [challenge_page]
-* Added "chal" parameter to shortcode to allow for creating custom pages
-* Bug fixes
-
-= 1.3.1 =
-* Set the challenge end date to be no earlier than the start date (can't end before you start)
-* Fixed bug in showing challenge list
+= 1.5 =
+* Added Long Text as an activity type
+* Added checkbox to allow for hidden activities
 
 = 1.4 =
 * Fix bug in admin with start and end date formats
@@ -97,6 +89,26 @@ One will be available in Point Tracker Pro releasing soon
 * Add Upgrade admin submenu (not linked right now)
 * Extended the size of the label for radio buttons and checkboxes and answer
 * Added a span below text fields to show character count
+
+= 1.3.1 =
+* Set the challenge end date to be no earlier than the start date (can't end before you start)
+* Fixed bug in showing challenge list
+
+= 1.3 =
+* Changed shortcode to [challenge] instead of [challenge_page]
+* Added "chal" parameter to shortcode to allow for creating custom pages
+* Bug fixes
+
+= 1.2 =
+* More bug fixes
+* Fixed incompatibility with plugins that have a save_post hook
+
+= 1.1 =
+* Couple bug fixes
+* Add screenshots
+
+= 1.0 =
+* Initial release
 
 == Upgrade Notice ==
 

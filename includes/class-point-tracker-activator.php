@@ -117,15 +117,15 @@ class Point_Tracker_Activator
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
 
         $query = "CREATE TABLE `{$wpdb->prefix}pt_challenges` (
-      `id` int(11) NOT NULL AUTO_INCREMENT,
-      `name` varchar(255) DEFAULT NULL,
-      `start` date DEFAULT NULL,
-      `end` date DEFAULT NULL,
-      `short_link` varchar(45) DEFAULT NULL,
-      `approval` tinyint(1) DEFAULT '0',
-      `desc` mediumtext,
-      PRIMARY KEY (`id`)
-    )";
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `start` date DEFAULT NULL,
+  `end` date DEFAULT NULL,
+  `short_link` varchar(45) DEFAULT NULL,
+  `approval` tinyint(1) DEFAULT '0',
+  `desc` mediumtext,
+  PRIMARY KEY (`id`)
+)";
         dbDelta($query);
         $res = $wpdb->get_row("SHOW TABLES LIKE '{$wpdb->prefix}pt_challenges'", ARRAY_N);
         if (! is_array($res) || ! count($res)) {
@@ -133,20 +133,22 @@ class Point_Tracker_Activator
         }
 
         $query = "CREATE TABLE `{$wpdb->prefix}pt_activities` (
-      `id` int(11) NOT NULL AUTO_INCREMENT,
-      `challenge_id` int(11) NOT NULL,
-      `name` varchar(60) NOT NULL,
-      `points` decimal(4,1) DEFAULT NULL,
-      `type` enum('checkbox','radio','text','number') NOT NULL,
-      `label` mediumtext DEFAULT NULL,
-      `question` varchar(100) DEFAULT NULL,
-      `min` int(11) DEFAULT '0',
-      `max` int(11) DEFAULT '0',
-      `chal_max` int(11) DEFAULT '0',
-      `desc` mediumtext,
-      `order` tinyint(2) DEFAULT '0',
-      PRIMARY KEY (`id`)
-    )";
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `challenge_id` int(11) NOT NULL,
+  `name` varchar(60) NOT NULL,
+  `points` decimal(4,1) DEFAULT NULL,
+  `type` enum('checkbox','radio','text','number', 'long-text') NOT NULL,
+  `label` mediumtext DEFAULT NULL,
+  `question` varchar(100) DEFAULT NULL,
+  `min` int(11) DEFAULT '0',
+  `max` int(11) DEFAULT '0',
+  `chal_max` int(11) DEFAULT '0',
+  `desc` mediumtext,
+  `order` tinyint(2) DEFAULT '0',
+  `hidden` tinyint(1) DEFAULT '0',
+  `group` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+)";
         dbDelta($query);
         $res = $wpdb->get_row("SHOW TABLES LIKE '{$wpdb->prefix}pt_activities'", ARRAY_N);
         if (! is_array($res) || ! count($res)) {
@@ -154,16 +156,16 @@ class Point_Tracker_Activator
         }
 
         $query = "CREATE TABLE `{$wpdb->prefix}pt_participants` (
-      `challenge_id` int(11) NOT NULL,
-      `user_id` int(11) NOT NULL,
-      `email` varchar(64) NOT NULL,
-      `member_id` int(11) NOT NULL,
-      `name` varchar(45) NOT NULL,
-      `approved` tinyint(1) NOT NULL DEFAULT '0',
-      `date_joined` date DEFAULT NULL,
-      `date_approved` date DEFAULT NULL,
-      PRIMARY KEY (`challenge_id`,`user_id`)
-    )";
+  `challenge_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `email` varchar(64) NOT NULL,
+  `member_id` int(11) NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `approved` tinyint(1) NOT NULL DEFAULT '0',
+  `date_joined` date DEFAULT NULL,
+  `date_approved` date DEFAULT NULL,
+  PRIMARY KEY (`challenge_id`,`user_id`)
+)";
         dbDelta($query);
         $res = $wpdb->get_row("SHOW TABLES LIKE '{$wpdb->prefix}pt_participants'", ARRAY_N);
         if (! is_array($res) || ! count($res)) {
@@ -171,13 +173,13 @@ class Point_Tracker_Activator
         }
 
         $query = "CREATE TABLE `{$wpdb->prefix}pt_log` (
-      `user_id` int(11) NOT NULL,
-      `activity_id` int(11) NOT NULL,
-      `log_date` date NOT NULL,
-      `log_time` time NOT NULL,
-      `value` text NOT NULL DEFAULT '',
-      PRIMARY KEY (`user_id`,`activity_id`,`log_date`)
-    )";
+  `user_id` int(11) NOT NULL,
+  `activity_id` int(11) NOT NULL,
+  `log_date` date NOT NULL,
+  `log_time` time NOT NULL,
+  `value` text NOT NULL DEFAULT '',
+  PRIMARY KEY (`user_id`,`activity_id`,`log_date`)
+)";
         dbDelta($query);
         $res = $wpdb->get_row("SHOW TABLES LIKE '{$wpdb->prefix}pt_log'", ARRAY_N);
         if (! is_array($res) || ! count($res)) {

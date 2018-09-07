@@ -30,8 +30,6 @@ class Point_Tracker_Deactivator
      */
     public static function deactivate()
     {
-        global $wpdb;
-
         if(!remove_all_actions('save_post')) {
             wp_die("Could not remove save_post actions");
         }
@@ -55,18 +53,5 @@ class Point_Tracker_Deactivator
             'ID' => $the_page->ID,
             'post_status' => 'draft'
         ]);
-
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}pt_challenges");
-            $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}pt_activities");
-            $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}pt_participants");
-            $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}pt_log");
-            $wpdb->query("DROP VIEW IF EXISTS {$wpdb->prefix}point_totals");
-            $wpdb->query("DROP VIEW IF EXISTS {$wpdb->prefix}leader_board");
-            $wpdb->query("DROP VIEW IF EXISTS {$wpdb->prefix}user_activity");
-            $wpdb->query("DROP FUNCTION IF EXISTS get_pt_activity_id");
-            $wpdb->query("DROP FUNCTION IF EXISTS get_pt_challenge_id");
-            $wpdb->query("DROP FUNCTION IF EXISTS get_pt_user_id");
-        }
     }
 }

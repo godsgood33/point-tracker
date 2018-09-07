@@ -3,6 +3,7 @@ add_action('wp_ajax_get-activities', 'pt_get_activity_table');
 add_action('wp_ajax_get-activity-details', 'pt_get_activity_details');
 add_action('wp_ajax_save-activity', 'pt_save_activity');
 add_action('wp_ajax_delete-activity', 'pt_delete_activity');
+add_action('wp_ajax_ac-group', 'pt_ac_group');
 
 /**
  * Getter function to get all the activities for a particular challenge
@@ -28,16 +29,24 @@ function pt_get_activity_table()
     $res = $wpdb->get_results($query);
     $_data = [];
     foreach ($res as $row) {
+        if($row->hidden) {
+            $name = "<i title='Hidden activity, not used for point counts'>" . html_entity_decode($row->name, ENT_QUOTES | ENT_HTML5) . "*</i>";
+        }
+        else {
+            $name = html_entity_decode($row->name, ENT_QUOTES | ENT_HTML5);
+        }
         $_data[] = [
             'order' => $row->order,
             'type' => ucfirst($row->type),
-            'name' => html_entity_decode($row->name, ENT_QUOTES | ENT_HTML5),
+            'name' => $name,
             'points' => $row->points,
             'chal_max' => $row->chal_max,
             'question' => html_entity_decode($row->question, ENT_QUOTES | ENT_HTML5),
             'desc' => html_entity_decode($row->desc, ENT_QUOTES | ENT_HTML5),
             'extras' => ($row->label ? html_entity_decode($row->label, ENT_QUOTES | ENT_HTML5) : "{$row->min}/{$row->max}"),
-            'action' => "<i class='fas fa-edit' data-id='{$row->id}'></i>&nbsp;&nbsp;<i class='far fa-trash-alt' data-id='{$row->id}'></i>"
+            'action' => "<i class='fas fa-edit' data-id='{$row->id}'></i>&nbsp;&nbsp;<i class='far fa-trash-alt' data-id='{$row->id}'></i>",
+            'hidden' => (boolean) $row->hidden,
+            'group' => html_entity_decode($row->group, ENT_QUOTES | ENT_HTML5)
         ];
     }
 
@@ -58,6 +67,11 @@ function pt_get_activity_table()
                 'title' => 'Name',
                 'defaultContent' => '',
                 'data' => 'name'
+            ],
+            [
+                'title' => 'Group',
+                'defaultContent' => '',
+                'data' => 'group'
             ],
             [
                 'title' => 'Point Value',
@@ -123,6 +137,7 @@ function pt_get_activity_details()
     $act->desc = html_entity_decode($act->desc, ENT_QUOTES | ENT_HTML5);
     $act->question = html_entity_decode($act->question, ENT_QUOTES | ENT_HTML5);
     $act->label = html_entity_decode($act->label, ENT_QUOTES | ENT_HTML5);
+    $act->group = html_entity_decode($act->group, ENT_QUOTES | ENT_HTML5);
 
     print json_encode($act);
     wp_die();
@@ -160,6 +175,8 @@ function pt_save_activity()
     $ques = sanitize_text_field(filter_input(INPUT_POST, 'question', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE));
     $desc = sanitize_text_field(filter_input(INPUT_POST, 'desc', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE));
     $order = filter_input(INPUT_POST, 'order', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+    $hidden = (boolean) filter_input(INPUT_POST, 'hidden', FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+    $group = sanitize_text_field(filter_input(INPUT_POST, 'group', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE));
 
     $params = [
         'name' => $name,
@@ -168,7 +185,9 @@ function pt_save_activity()
         'type' => $type,
         'question' => $ques,
         'desc' => $desc,
-        'order' => $order
+        'order' => $order,
+        'hidden' => $hidden ? 1 : 0,
+        'group' => $group
     ];
 
     if (! pt_validate_activity($params)) {
@@ -212,7 +231,8 @@ function pt_save_activity()
         'name' => $name,
         'desc' => $desc,
         'question' => $ques,
-        'label' => $params['label']
+        'label' => $params['label'],
+        'group' => $group
     ]);
 
     wp_die();
@@ -280,7 +300,8 @@ function pt_validate_activity(&$act)
         'checkbox',
         'radio',
         'number',
-        'text'
+        'text',
+        'long-text'
     ])) {
         $act['error'] .= 'Invalid activity type selected<br />';
         $ret = false;
@@ -291,7 +312,7 @@ function pt_validate_activity(&$act)
         $ret = false;
     }
 
-    if (! $act['points'] || ! is_numeric($act['points'])) {
+    if (! $act['hidden'] && (! $act['points'] || ! is_numeric($act['points']))) {
         $act['error'] .= 'Invalid value for activity points<br />';
         $ret = false;
     }
@@ -334,7 +355,7 @@ function pt_validate_activity(&$act)
     }
 
     $chal_max = filter_input(INPUT_POST, 'chal-max', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-    $act['chal_max'] = ($chal_max ? $chal_max : 0);
+    $act['chal_max'] = ($chal_max && !$act['hidden'] ? $chal_max : 0);
 
     if ($ret) {
         unset($act['error']);
@@ -343,3 +364,36 @@ function pt_validate_activity(&$act)
     return $ret;
 }
 
+/**
+ * Method to perform an autocomplete when typing and selecting activity groups
+ *
+ * @global wpdb $wpdb
+ *
+ * @return string
+ */
+function pt_ac_group() {
+    global $wpdb;
+
+    $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+    $term = "%" . $wpdb->esc_like(stripslashes(filter_input(INPUT_POST, 'keyword', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE))) . "%";
+
+    if(!$chal_id) {
+        print json_encode([
+            'error' => 'Please select a challenge to search'
+        ]);
+        wp_die();
+    }
+
+    $groups = $wpdb->get_results($wpdb->prepare(
+        "SELECT DISTINCT(`group`) AS 'act_group'
+FROM {$wpdb->prefix}pt_activities
+WHERE challenge_id = %d AND `group` LIKE %s", $chal_id, $term));
+
+    $ret = [];
+    foreach($groups as $g) {
+        $ret[] = $g->act_group;
+    }
+
+    print json_encode($ret);
+    wp_die();
+}

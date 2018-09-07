@@ -120,6 +120,7 @@ class Point_Tracker_Admin
             wp_enqueue_script('jquery-ui-datepicker');
             wp_enqueue_script('jquery-ui-tooltip');
             wp_enqueue_script('jquery-ui-dialog');
+            wp_enqueue_script('jquery-ui-autocomplete');
 
             wp_enqueue_script('spinner', plugin_dir_url(__DIR__) . 'includes/spin/spin.min.js', [], $this->version, false);
 
