@@ -161,7 +161,7 @@ function pt_save_activity()
         wp_die();
     }
 
-    $name = preg_replace("/[^a-z]/", "", strtolower(
+    $name = preg_replace("/[^a-z0-9]/", "", strtolower(
         filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE)
         ));
     $act_id = filter_input(INPUT_POST, 'act-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);

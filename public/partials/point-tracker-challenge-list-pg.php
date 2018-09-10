@@ -28,9 +28,9 @@ if (is_user_logged_in()) {
         } else {
             $desc = stripcslashes(nl2br($chal->desc));
             print <<<EOL
-    <h3>{$chal->name}</h3>
-    <p>{$desc}</p>
-    <a href='{$chal_page->guid}?chal={$chal->short_link}'>Go to Challenge</a>
+<h3>{$chal->name}</h3>
+<p>{$desc}</p>
+<a href='{$chal_page->guid}?chal={$chal->short_link}'>Go to Challenge</a>
 EOL;
         }
     }
@@ -56,6 +56,7 @@ WHERE
     c.`start` <= %s AND
     c.`end` >= %s
 ORDER BY c.name", get_current_user_id(), $now->format("Y-m-d"), $now->format("Y-m-d")));
+
 $past_challenges = $wpdb->get_results($wpdb->prepare("SELECT *
 FROM {$wpdb->prefix}pt_challenges c
 JOIN {$wpdb->prefix}pt_participants cp ON cp.challenge_id = c.id
@@ -63,6 +64,7 @@ WHERE
     cp.`user_id`=%d AND
     c.`end` < %s
 ORDER BY c.`name`", get_current_user_id(), $now->format("Y-m-d")));
+
 $upcoming_challenges = $wpdb->get_results($wpdb->prepare("SELECT *
 FROM {$wpdb->prefix}pt_challenges c
 JOIN {$wpdb->prefix}pt_participants cp ON cp.challenge_id = c.id
@@ -95,11 +97,11 @@ if (is_user_logged_in()) {
         print <<<EOR
 <tr>
     <td>{$name}</td>
-    <td>$link<br />
+    <td>{$link}<br />
         <a href='{$act_page->guid}?chal={$chal->short_link}'>My Activity</a>
     </td>
-    <td>$approved</td>
-    <td>$desc</td>
+    <td>{$approved}</td>
+    <td>{$desc}</td>
 </tr>
 EOR;
 }
@@ -130,9 +132,9 @@ EOR;
 <tr>
     <td>{$name}</td>
     <td>{$chal->short_link}</td>
-    <td>$approved</td>
+    <td>{$approved}</td>
     <td>{$starts->format(get_option('date_format', 'Y-m-d'))}</td>
-    <td>$desc</td>
+    <td>{$desc}</td>
 </tr>
 EOR;
 }
@@ -172,7 +174,6 @@ EOR;
 }
 
 ?>
-
 
 <div id="dialog-form" title="Add new leader">
     <p class="validateTips">All form fields are required.</p>

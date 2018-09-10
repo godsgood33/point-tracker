@@ -113,7 +113,7 @@ class Point_Tracker_Admin
                 'jquery'
             ], $this->version, false);
             wp_localize_script("{$this->plugin_name}-admin-core", 'my_object', [
-                'date_format' => $this->php_to_js_date(get_option('date_format', "m/d/Y"))
+                'date_format' => $this->php_to_js_date(get_option('date_format'))
             ]);
 
             wp_enqueue_script('jquery-ui-core');
@@ -236,12 +236,14 @@ class Point_Tracker_Admin
         include_once ('partials/point-tracker-log-pg.php');
     }
 
-
+    /**
+     * Method to display to upgrade page
+     */
     public function display_upgrade_page()
     {
         print <<<EOL
 <h2>Upgrade to Point Tracker Pro</h2>
-<p>Take your challenges to the next level with <a href='' target='_blank'>Point Tracker Pro</a></p>
+<p>Take your challenges to the next level with <a href='#'>Point Tracker Pro</a></p>
 EOL;
     }
 

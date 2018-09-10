@@ -55,7 +55,7 @@ You can either delete it yourself or if they visit the View My Activity page (/m
 
 This is an activity that will not be scored.  The points will be defaulted to 0.  They will also not be displayed on any public displays other than the challenge form asking the user for their answer.  They are ideal for collecting information like feedback that you don't necessarily want to reward.
 
-= What is an activity "group" =
+= What is an activity "group"? =
 
 Activity groups allow you to group the activities into sections with a header.  This allow the participants to more easily find the questions they are wanting to answer.  They are optional.
 
@@ -82,6 +82,7 @@ One will be available in Point Tracker Pro releasing soon
 = 1.5 =
 * Added Long Text as an activity type
 * Added checkbox to allow for hidden activities
+* Added ability to group activities
 
 = 1.4 =
 * Fix bug in admin with start and end date formats
