@@ -50,7 +50,18 @@ function pt_get_activity_table()
         ];
     }
 
+    $tac = count($_data);
+
+    $query = $wpdb->prepare("SELECT COUNT(1) FROM {$wpdb->prefix}pt_activities WHERE challenge_id = %d AND (`group` IS NOT NULL AND `group` != '')", $chal_id);
+    $tagc = $wpdb->get_var($query);
+
+    $group_msg = false;
+    if($tagc > 0 && $tac != $tagc) {
+        $group_msg = true;
+    }
+
     $ret = [
+        'group_msg' => $group_msg,
         'data' => $_data,
         'columns' => [
             [
@@ -225,6 +236,17 @@ function pt_save_activity()
         }
     }
 
+    $query = $wpdb->prepare("SELECT COUNT(1) FROM {$wpdb->prefix}pt_activities WHERE challenge_id = %d", $chal_id);
+    $tac = $wpdb->get_var($query);
+
+    $query = $wpdb->prepare("SELECT COUNT(1) FROM {$wpdb->prefix}pt_activities WHERE challenge_id = %d AND (`group` IS NOT NULL AND `group` != '')", $chal_id);
+    $tagc = $wpdb->get_var($query);
+
+    $group_msg = false;
+    if($tagc > 0 && $tac != $tagc) {
+        $group_msg = true;
+    }
+
     print json_encode([
         'id' => $id,
         'success' => 'Successfully saved the activity',
@@ -232,7 +254,8 @@ function pt_save_activity()
         'desc' => $desc,
         'question' => $ques,
         'label' => $params['label'],
-        'group' => $group
+        'group' => $group,
+        'group_msg' => $group_msg
     ]);
 
     wp_die();

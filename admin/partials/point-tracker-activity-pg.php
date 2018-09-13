@@ -22,6 +22,10 @@ $challenges = $wpdb->get_results($query) or [];
 <div id='waiting'></div>
 <div id='loading'></div>
 
+<div id='group-msg' class='error notice' style='display:none;'>
+    <p><?php print __("Please add all activities to a group, or none of them."); ?></p>
+</div>
+
 <input type='hidden' id='_wpnonce'
 	value='<?php print wp_create_nonce('pt-delete-activity'); ?>' />
 
@@ -87,7 +91,6 @@ foreach($challenges as $chal) {
 	</div>
 
     <div class='onefourth'>
-        <label for='act-group'>Group:</label>
         <input type='text'
             class='act-group tooltip-field' id='act-group' placeholder='Group...'
             title='Do you want to group this activity so that they are organized together?' /><br />

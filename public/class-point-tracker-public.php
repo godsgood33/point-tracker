@@ -259,7 +259,7 @@ LIMIT 1", $part->user_id, $act->id);
         } else {
             $pts = "<small title='Activity Point Value'>($act->points pts)</small>";
         }
-        print "<h3>{$ques} {$pts} {$la}</h3>";
+        print "<h3>{$ques} {$pts}{$la}</h3>";
 
         if ($act->type == 'radio' || $act->type == 'checkbox') {
             $labels = explode(",", $act->label);

@@ -42,8 +42,8 @@ else {
 FROM {$wpdb->prefix}pt_activities
 WHERE
     challenge_id = %d AND
-    `group` IS NOT NULL
-    AND `group` != ''";
+    `group` IS NOT NULL AND
+    `group` != ''";
     $groups = $wpdb->get_results($wpdb->prepare($query, $chal->id));
 }
 
@@ -88,6 +88,7 @@ if(count($groups)) {
         foreach($g as $act) {
             Point_Tracker_Public::print_Activity($act, $part);
         }
+        print "<hr/>";
     }
 } else {
     foreach ($chal->activities as $act) {
