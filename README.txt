@@ -83,6 +83,8 @@ One will be available in Point Tracker Pro releasing soon
 * Added Long Text as an activity type
 * Added checkbox to allow for hidden activities
 * Added ability to group activities
+* Added dashboard widget
+* Added beginnings of contextual help dropdowns
 
 = 1.4 =
 * Fix bug in admin with start and end date formats
