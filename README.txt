@@ -5,7 +5,7 @@ Tags: team activities, challenge, content
 Requires at least: 4.4.2
 Requires PHP: 5.6
 Tested up to: 4.9.8
-Stable tag: 1.5
+Stable tag: 1.5.1
 License: Apache-2.0
 License URI: https://www.apache.org/licenses/LICENSE-2.0
 

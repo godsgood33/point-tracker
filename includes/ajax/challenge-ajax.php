@@ -204,10 +204,14 @@ function pt_get_widget_data()
     $date_format = get_option('date_format', 'Y-m-d');
 
     if($type == 'challenge') {
+        $chal = get_page_by_title("Challenge");
+        
         $query = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_challenges WHERE id = %d", $chal_id);
         $rows = $wpdb->get_row($query);
         $start_date = new DateTime($rows->start);
         $end_date = new DateTime($rows->end);
+        $data->short_link = $rows->short_link;
+        $data->chal_url = $chal->guid;
         $data->start = $start_date->format($date_format);
         $data->end = $end_date->format($date_format);
         

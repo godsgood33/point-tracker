@@ -122,7 +122,7 @@ function pt_participant_save_entry()
     $wpdb->suppress_errors = true;
     $wpdb->show_errors = false;
     $altered = false;
-    $now = null;
+    $now = new DateTime("now", new DateTimeZone(get_option('timezone_string')));
 
     $act_id = filter_input(INPUT_POST, 'act-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
     $log_date = filter_input(INPUT_POST, 'log-date', FILTER_VALIDATE_REGEXP, [
@@ -153,8 +153,6 @@ function pt_participant_save_entry()
 
     if (isset($log_date)) {
         $now = new DateTime($log_date, new DateTimeZone(get_option('timezone_string')));
-    } else {
-        $now = new DateTime("now", new DateTimeZone(get_option('timezone_string')));
     }
 
     if (! is_a($now, 'DateTime')) {

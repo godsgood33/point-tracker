@@ -75,9 +75,7 @@ class Point_Tracker_Admin
          * between the defined hooks and the functions defined in this
          * class.
          */
-        // $uri = filter_input(INPUT_GET, 'page', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
-        // if (preg_match("/point\-tracker/", $uri)) {
-        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . "css/point-tracker-admin.css", [], $this->version, 'all');
+        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . "css/point-tracker-admin.min.css", [], $this->version, 'all');
 
         wp_enqueue_style('ui-datepicker-css', plugin_dir_url(__DIR__) . "includes/jquery-ui-1.12.1/jquery-ui.min.css", [], $this->version, 'all');
 
@@ -85,7 +83,6 @@ class Point_Tracker_Admin
         wp_enqueue_style('dt-buttons', plugin_dir_url(__DIR__) . "includes/datatables/Buttons-1.0.3/css/buttons.dataTables.min.css");
 
         wp_enqueue_style('font-awesome', plugin_dir_url(__DIR__) . "includes/font-awesome/font-awesome-v5.2.0.min.css", [], $this->version, 'all');
-        // }
     }
 
     /**
@@ -107,9 +104,7 @@ class Point_Tracker_Admin
          * between the defined hooks and the functions defined in this
          * class.
          */
-        // $uri = filter_input(INPUT_GET, 'page', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
-        // if (preg_match("/point\-tracker/", $uri)) {
-        wp_enqueue_script("{$this->plugin_name}-admin-core", plugin_dir_url(__FILE__) . "js/point-tracker-admin.js", [
+        wp_enqueue_script("{$this->plugin_name}-admin-core", plugin_dir_url(__FILE__) . "js/point-tracker-admin.min.js", [
             'jquery'
         ], $this->version, false);
         wp_localize_script("{$this->plugin_name}-admin-core", 'my_object', [
@@ -134,7 +129,6 @@ class Point_Tracker_Admin
         wp_enqueue_script('dt-responsive', plugin_dir_url(__DIR__) . "includes/datatables/Responsive-1.0.7/js/dataTables.responsive.min.js");
         wp_enqueue_script('dt-scroller', plugin_dir_url(__DIR__) . "includes/datatables/Scroller-1.3.0/js/dataTables.scroller.min.js");
         wp_enqueue_script('dt-select', plugin_dir_url(__DIR__) . "includes/datatables/Select-1.0.1/js/dataTables.select.min.js");
-        // }
     }
 
     /**
@@ -144,14 +138,6 @@ class Point_Tracker_Admin
      */
     public function add_plugin_admin_menu()
     {
-        /*
-         * Add a settings page for this plugin to the Settings menu.
-         *
-         * NOTE: Alternative menu locations are available via WordPress administration menu functions.
-         *
-         * Administration Menus: http://codex.wordpress.org/Administration_Menus
-         *
-         */
         add_menu_page('Point Tracker', 'Point Tracker', 'manage_options', 'point-tracker-menu', [
             $this,
             'display_core_menu_page'
@@ -347,7 +333,7 @@ class Point_Tracker_Admin
     {
         print <<<EOL
 <h2>Upgrade to Point Tracker Pro</h2>
-<p>Take your challenges to the next level with <a href='#'>Point Tracker Pro</a></p>
+<p>Take your challenges to the next level with <a href='https://wppointtracker.com'>Point Tracker Pro</a></p>
 EOL;
     }
 

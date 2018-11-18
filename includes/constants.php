@@ -47,7 +47,7 @@ The challenge coordinator has denied your request for access to the challenge.  
  */
 define('PT_NEW_USER', "Greetings,
 At your request, we have added a new account for you at ".site_url().".
-    You an now login with the credentials below:
+    You can now login with the credentials below:
 
 Username: {username}
 Password: {password}

@@ -140,7 +140,7 @@ class Point_Tracker_Activator
     `challenge_id` int(11) NOT NULL,
     `name` varchar(60) NOT NULL,
     `points` decimal(4,1) DEFAULT NULL,
-    `type` enum('checkbox','radio','text','number', 'long-text') NOT NULL,
+    `type` enum('checkbox','radio','text','number','long-text') NOT NULL,
     `label` mediumtext DEFAULT NULL,
     `question` varchar(100) DEFAULT NULL,
     `min` int(11) DEFAULT '0',
