@@ -4,7 +4,7 @@
  *
  * This file is used to markup the public-facing aspects of the plugin.
  *
- * @link       https://essentialscentsabilities.com
+ * @link       https://wppointtracker.com
  * @since      1.0.0
  *
  * @package    Point_Tracker

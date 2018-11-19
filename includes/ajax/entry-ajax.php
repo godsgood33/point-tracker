@@ -177,8 +177,7 @@ WHERE ca.id = %d", $act_id);
     }
 
     $start = new DateTime($chal->start, new DateTimeZone(get_option('timezone_string')));
-    $end = new DateTime($chal->end, new DateTimeZone(get_option('timezone_string')));
-    $end->setTime(23, 59, 59);
+    $end = new DateTime("{$chal->end} 23:59:59", new DateTimeZone(get_option('timezone_string')));
 
     // Verify the challenge is still running
     if ($now < $start) {
@@ -241,7 +240,7 @@ WHERE
     }
 
     // Make sure a user was added to the challenge
-    if (! $res) {
+    if ($res === false) {
         print json_encode([
             'error' => 'Unable to add you to the challenge'
         ]);
