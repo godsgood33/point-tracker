@@ -4,8 +4,8 @@ Contributors: godsgood33
 Tags: team activities, challenge, content
 Requires at least: 4.4.2
 Requires PHP: 5.6
-Tested up to: 4.9.8
-Stable tag: 1.5.1
+Tested up to: 5.0.2
+Stable tag: 1.6
 License: Apache-2.0
 License URI: https://www.apache.org/licenses/LICENSE-2.0
 
@@ -29,7 +29,7 @@ This section describes how to install the plugin and get it working.
 8. Select the challenge you just created from the drop down
 9. Fill out the boxes and create your first activity for that challenge and click "Save"
 10. Send the link to whomever you wish so they can join 
-11. Under Settings -> PT Settings there are global options that you can enable, right now, it is only requiring an account for those wanting to participate in a challenge
+11. Under Settings -> Point Tracker there are global options that you can enable, right now, it is only requiring an account for those wanting to participate in a challenge
 
 == Frequently Asked Questions ==
 
@@ -61,11 +61,11 @@ Activity groups allow you to group the activities into sections with a header.  
 
 = How can I create a custom page =
 
-After you've created a challenge, copy the unique code for that challenge.  Create a new page at Pages -> Add New.  Give it a name and whatever content you'd like.  Then where you'd like to put the challenge form simply type `[challenge chal={challenge code you copied}][/challenge]`, then publish the page.  That is all.  You can also create an activity page using the shortcode `[my_activity chal={code}][/my_activity]`.
+After you've created a challenge, copy/paste the unique code for the challenge into a new shortcode `[challenge chal={challenge code you copied}][/challenge]`, then publish the page.  You can also create custom pages for the My Activity and Leader Board pages using their respective shortcodes (`[my_activity chal={code}][/my_activity]` and `[leader_board chal={code]][/leader_board]`).
 
 = I'd like a leader board =
 
-One will be available in Point Tracker Pro releasing soon
+One will be available in Point Tracker Pro at https://wppointtracker.com/point-tracker-pro/
 
 == Screenshots ==
 
@@ -78,6 +78,9 @@ One will be available in Point Tracker Pro releasing soon
 7. This is a screenshot of the "View My Activity" page after a test user has saved some activities
 
 == Changelog ==
+
+= 1.6 =
+* Made Gutenberg and WP 5+ compatible
 
 = 1.5 =
 * Added Long Text as an activity type

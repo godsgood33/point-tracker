@@ -18,8 +18,8 @@ if(!$chal_link) {
     $chal_link = filter_var(Point_Tracker_Public::$chal, FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
 }
 
+if(!is_admin()) {
 $chal = Point_Tracker::init($chal_link);
-
 $chal->name = html_entity_decode($chal->name, ENT_QUOTES | ENT_HTML5);
 $chal->desc = html_entity_decode($chal->desc, ENT_QUOTES | ENT_HTML5);
 ?>
@@ -104,4 +104,5 @@ EOR;
 	<table id='my-activity-table'></table>
 </div>
 <?php
+}
 }

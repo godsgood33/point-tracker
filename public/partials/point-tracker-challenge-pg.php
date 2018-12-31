@@ -18,6 +18,7 @@ if (! $chal_link) {
     $chal_link = filter_var(Point_Tracker_Public::$chal, FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
 }
 
+if(!is_admin()) {
 $chal = Point_Tracker::init($chal_link);
 
 $act_page = get_page_by_title("My Activity");
@@ -94,4 +95,5 @@ if(count($groups)) {
     foreach ($chal->activities as $act) {
         Point_Tracker_Public::print_Activity($act, $part);
     }
+}
 }

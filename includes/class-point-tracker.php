@@ -72,7 +72,7 @@ class Point_Tracker
         if (defined('PT_VERSION')) {
             $this->version = PT_VERSION;
         } else {
-            $this->version = '1.5.1';
+            $this->version = '1.6';
         }
         $this->plugin_name = 'point-tracker';
 
@@ -266,7 +266,7 @@ class Point_Tracker
 
         if(is_user_logged_in() && !$list) {
             if (! Point_Tracker::is_user_in_challenge($chal->id, get_current_user_id()) && $chal->approval) {
-                header("Location: {$list_page->guid}?chal={$chal_link}");
+                print "<script type='text/javascript'>document.location.href = '{$list_page->guid}?chal={$chal_link}';</script>";
             } elseif (! Point_Tracker::is_participant_approved($chal->id, get_current_user_id()) && $chal->approval) {
                 wp_die("You have not been approved to access this challenge yet", "You shall not pass!", [
                     'response' => 301

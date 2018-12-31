@@ -333,7 +333,16 @@ class Point_Tracker_Admin
     {
         print <<<EOL
 <h2>Upgrade to Point Tracker Pro</h2>
-<p>Take your challenges to the next level with <a href='https://wppointtracker.com'>Point Tracker Pro</a></p>
+<p><a href='https://wppointtracker.com/point-tracker-pro' target='_blank'>Point Tracker Pro</a> is the next level of challenge tracking.  It includes functionality like:</p>
+
+<ul>
+    <li>Leader Lists &mdash; for grouping people which allows you to create multiple challenge winners</li>
+    <li>Public Leader Boards &mdash; create a public leader board that is available to all your participants so they can see where they rank in the challenge</li>
+    <li>Activity Backdating &mdash; allow participants to log an activity on a different date than the one they are actually logging it on</li>
+    <li>Activity Start/End Dates &mdash; allow participants to log an activity only during a specific date range</li>
+    <li>Participant Upload &mdash; upload a file to automatically create all of your participants and add them to the challenge</li>
+    <li>Random Name Drawing &mdash; Randomly select a name from the filterable list of potential winners</li>
+</ul>
 EOL;
     }
 

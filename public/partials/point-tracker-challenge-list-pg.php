@@ -11,6 +11,7 @@ $chal_page = get_page_by_title("Challenge");
 $chal_link = filter_input(INPUT_GET, 'chal', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
 $user = null;
 
+if(!is_admin()) {
 $chal = Point_Tracker::init($chal_link, true);
 
 if (is_user_logged_in()) {
@@ -43,7 +44,6 @@ EOL;
 $user = wp_get_current_user();
 
 $now = new DateTime("now", new DateTimeZone(get_option('timezone_string')));
-
 ?>
 <div id='msg'></div>
 <input type='hidden' id='chal-link' value='<?php print $chal_link; ?>' />
@@ -195,3 +195,4 @@ EOR;
     </form>
 </div>
 
+<?php } ?>

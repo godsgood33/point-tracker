@@ -37,72 +37,93 @@ class Point_Tracker_Activator
         if(!remove_all_actions('save_post')) {
             wp_die("Could not remove save_post actions");
         }
+        
+        $wp_version = get_bloginfo('version');
+        $gutenberg_installed = false;
+        if(is_plugin_active('gutenberg')) {
+            $gutenberg_installed = true;
+        } elseif(version_compare($wp_version, '5.0', ">=")) {
+            $gutenberg_installed = true;
+        }
+        
+        if(is_plugin_active('classic-editor')) {
+            $gutenberg_installed = false;
+        }
 
         $site_url = get_site_url();
 
         $the_page = get_page_by_title("Challenge");
         if (! $the_page->ID) {
             // create page with template
-            $post_id = wp_insert_post(array(
+            $post_id = wp_insert_post([
                 'post_title' => 'Challenge',
-                'post_content' => "[challenge]",
+                'post_content' => ($gutenberg_installed ? "<!-- wp:shortcode --> " : "") . "[challenge]" . ($gutenberg_installed ? " <!-- /wp:shortcode -->" : ""),
                 'post_status' => 'publish',
-                'post_author' => 1,
+                'post_author' => get_current_user_id(),
                 'post_type' => 'page',
-                'guid' => "{$site_url}/index.php/challenge/"
-            ));
+                'guid' => "{$site_url}/index.php/challenge/",
+                'comment_status' => 'closed',
+                'ping_status' => 'closed',
+                'post_name' => 'challenge'
+            ]);
         } else {
             // make sure the page is not trashed...
             $the_page->post_status = 'publish';
-            $the_page->post_content = "[challenge]";
+            $the_page->post_content = ($gutenberg_installed ? "<!-- wp:shortcode --> " : "") . "[challenge]" . ($gutenberg_installed ? " <!-- /wp:shortcode -->" : "");
             $the_page->guid = "{$site_url}/index.php/challenge/";
             $post_id = wp_update_post($the_page);
         }
 
         if (! $post_id) {
-            die("Failed to save Challenge page");
+            wp_die("Failed to save Challenge page");
         }
 
         $the_page = get_page_by_title("Challenge List");
         if (! $the_page->ID) {
-            $post_id = wp_insert_post(array(
+            $post_id = wp_insert_post([
                 'post_title' => 'Challenge List',
-                'post_content' => '[challenge_list]',
+                'post_content' => ($gutenberg_installed ? "<!-- wp:shortcode --> " : "") . "[challenge_list]" . ($gutenberg_installed ? " <!-- /wp:shortcode -->" : ""),
                 'post_status' => 'publish',
-                'post_author' => 1,
+                'post_author' => get_current_user_id(),
                 'post_type' => 'page',
-                'guid' => "{$site_url}/index.php/challenge-list/"
-            ));
+                'guid' => "{$site_url}/index.php/challenge-list/",
+                'comment_status' => 'closed',
+                'ping_status' => 'closed',
+                'post_name' => 'challenge-list'
+            ]);
         } else {
             $the_page->post_status = 'publish';
-            $the_page->post_content = '[challenge_list]';
+            $the_page->post_content = ($gutenberg_installed ? "<!-- wp:shortcode --> " : "") . "[challenge_list]" . ($gutenberg_installed ? " <!-- /wp:shortcode -->" : "");
             $the_page->guid = "{$site_url}/index.php/challenge-list/";
             $post_id = wp_update_post($the_page);
         }
 
         if (! $post_id) {
-            die("Failed to save Challenge List page");
+            wp_die("Failed to save Challenge List page");
         }
 
         $the_page = get_page_by_title("My Activity");
         if (! $the_page->ID) {
-            $post_id = wp_insert_post(array(
+            $post_id = wp_insert_post([
                 'post_title' => 'My Activity',
-                'post_content' => '[my_activity]',
+                'post_content' => ($gutenberg_installed ? "<!-- wp:shortcode --> " : "") . "[my_activity]" . ($gutenberg_installed ? " <!-- /wp:shortcode -->" : ""),
                 'post_status' => 'publish',
-                'post_author' => 1,
+                'post_author' => get_current_user_id(),
                 'post_type' => 'page',
-                'guid' => "{$site_url}/index.php/my-activity/"
-            ));
+                'guid' => "{$site_url}/index.php/my-activity/",
+                'comment_status' => 'closed',
+                'ping_status' => 'closed',
+                'post_name' => 'my-activity'
+            ]);
         } else {
             $the_page->post_status = 'publish';
-            $the_page->post_content = '[my_activity]';
+            $the_page->post_content = ($gutenberg_installed ? "<!-- wp:shortcode --> " : "") . "[my_activity]" . ($gutenberg_installed ? " <!-- /wp:shortcode -->" : "");
             $the_page->guid = "{$site_url}/index.php/my-activity/";
             $post_id = wp_update_post($the_page);
         }
 
         if (! $post_id) {
-            die("Failed to save My Activity page");
+            wp_die("Failed to save My Activity page");
         }
     }
 
