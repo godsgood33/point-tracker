@@ -5,7 +5,7 @@ Tags: team activities, challenge, content
 Requires at least: 4.4.2
 Requires PHP: 5.6
 Tested up to: 5.0.2
-Stable tag: 1.6
+Stable tag: 1.7
 License: Apache-2.0
 License URI: https://www.apache.org/licenses/LICENSE-2.0
 
@@ -78,6 +78,9 @@ One will be available in Point Tracker Pro at https://wppointtracker.com/point-t
 7. This is a screenshot of the "View My Activity" page after a test user has saved some activities
 
 == Changelog ==
+
+= 1.7 =
+* Added ability to mark a participant as the challenge "winner", will notify subsequent visitors that 'x' is the winner.
 
 = 1.6 =
 * Made Gutenberg and WP 5+ compatible

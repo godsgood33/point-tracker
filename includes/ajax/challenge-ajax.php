@@ -3,6 +3,7 @@ add_action('wp_ajax_get-challenge', 'pt_get_challenge');
 add_action('wp_ajax_save-challenge', 'pt_save_challenge');
 add_action('wp_ajax_delete-challenge', 'pt_delete_challenge');
 add_action('wp_ajax_pt-get-widget-data', 'pt_get_widget_data');
+add_action('wp_ajax_remove-winner', 'pt_remove_winner');
 
 /**
  * Getter function for the challenge specifics
@@ -42,6 +43,10 @@ function pt_get_challenge()
     $chal->desc = html_entity_decode(stripcslashes($chal->desc), ENT_QUOTES | ENT_HTML5);
     $chal->act_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(1) FROM {$wpdb->prefix}pt_activities WHERE challenge_id=%d", $chal_id));
     $chal->part_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(1) FROM {$wpdb->prefix}pt_participants WHERE challenge_id=%d", $chal_id));
+    
+    if(is_numeric($chal->winner)) {
+        $chal->winner = $wpdb->get_var($wpdb->prepare("SELECT name FROM {$wpdb->prefix}pt_participants WHERE challenge_id = %d AND user_id = %d", $chal_id, $chal->winner));
+    }
 
     print json_encode($chal);
 
@@ -285,5 +290,36 @@ function pt_get_widget_data()
     }
 
     print json_encode($data);
+    wp_die();
+}
+
+/**
+ * Function to remove a existing challenge winner
+ * 
+ * @global wpdb $wpdb
+ */
+function pt_remove_winner()
+{
+    global $wpdb;
+    
+    if(!current_user_can('manage_options')) {
+        print json_encode(['error' => 'Access denied']);
+        wp_die();
+    }
+    
+    $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+    $chal = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_challenges WHERE id = %d", $chal_id));
+    
+    if(!$chal) {
+        print json_encode(['error' => 'Could not find the selected challenge']);
+        wp_die();
+    }
+    
+    if(!$wpdb->update("{$wpdb->prefix}pt_challenges", ['winner' => null], ['id' => $chal_id])) {
+        print json_encode(['error' => $wpdb->last_error]);
+        wp_die();
+    }
+    
+    print json_encode(['success' => 'Successfully removed the winner']);
     wp_die();
 }

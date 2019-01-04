@@ -33,9 +33,9 @@ $challenges = $wpdb->get_results($query) or [];
 <div id='msg'></div>
 <input type='hidden' id='_wpnonce'
 	value='<?php print wp_create_nonce('pt-delete-challenge'); ?>' />
-<input type='button' id='save-challenge' value='Save' />
-&nbsp;&nbsp;
-<input type='button' id='delete-challenge' value='Delete' />
+<input type='button' id='save-challenge' value='Save' />&nbsp;&nbsp;
+<input type='button' id='delete-challenge' value='Delete' />&nbsp;&nbsp;
+<input type='button' id='remove-winner' value='Remove Winner' />
 <br />
 <br />
 Challenge Name:
@@ -48,7 +48,9 @@ foreach($challenges as $chal) {
 }
 ?>
 </select>
-<br />
+
+<div id='winner'></div>
+
 <br />
 <div>
 	<input type='text' id='name' class='tooltip-field'
