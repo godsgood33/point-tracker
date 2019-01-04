@@ -147,6 +147,7 @@ class Point_Tracker_Activator
     `short_link` varchar(45) DEFAULT NULL,
     `approval` tinyint(1) DEFAULT '0',
     `desc` mediumtext,
+    `winner` int(11) DEFAULT NULL,
     PRIMARY KEY (`id`)
 )";
         dbDelta($query);

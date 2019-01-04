@@ -5,6 +5,7 @@ add_action('wp_ajax_remove-participant', 'pt_remove_participant');
 add_action('wp_ajax_add-participant', 'pt_add_participant');
 add_action('wp_ajax_join-challenge', 'pt_join_challenge');
 add_action('wp_ajax_clear-participants', 'pt_clear_participants');
+add_action('wp_ajax_mark-winner', 'pt_mark_winner');
 
 /**
  * Function to get all the challenge participants
@@ -42,15 +43,23 @@ FROM tmp_log al
 GROUP BY al.user_id";
     $participants = $wpdb->get_results($query);
 
-    foreach ($participants as $part) {
+    $winner_idx = null;
+    foreach ($participants as $x => $part) {
         $_data[] = [
             'approved' => "<input type='checkbox' " . (! $chal->approval ? "disabled" : "") . " class='approve' " . ((boolean) $part->approved ? " checked" : "") . " data-user-id='{$part->user_id}' />",
             'memberid' => $part->member_id,
             'name' => html_entity_decode($part->name, ENT_QUOTES | ENT_HTML5),
             'email' => sanitize_email($part->email),
             'totalPoints' => $part->total,
-            'action' => "<i class='far fa-trash-alt' title='Remove this participant from the activity' data-user-id='{$part->user_id}'></i>"
+            'action' => "<i class='far fa-trash-alt' title='Remove this participant from the activity' data-user-id='{$part->user_id}'></i>" .
+                "&nbsp;&nbsp;" .
+                "<i class='fas fa-trophy' title='Mark participant as winner' data-user-id='{$part->user_id}'></i>",
+            'winner' => ($chal->winner == $part->user_id ? true : false)
         ];
+        
+        if($chal->winner == $part->user_id) {
+            $winner_idx = $x;
+        }
     }
 
     $columns = [
@@ -88,7 +97,8 @@ GROUP BY al.user_id";
 
     print json_encode([
         'columns' => $columns,
-        'data' => $_data
+        'data' => $_data,
+        'winner' => $winner_idx
     ]);
     wp_die();
 }
@@ -378,5 +388,39 @@ function pt_clear_participants()
     ] : [
         'error' => $wpdb->last_error
     ]);
+    wp_die();
+}
+
+/**
+ * Function to mark a participant as the winner of a challenge
+ * 
+ * @global wpdb $wpdb
+ */
+function pt_mark_winner()
+{
+    global $wpdb;
+    $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+    $user_id = filter_input(INPUT_POST, 'user-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+    
+    $chal = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_challenges WHERE id = %d", $chal_id));
+    
+    if(!$chal) {
+        print json_encode(['error' => 'Unable to find the challenge selected']);
+        wp_die();
+    }
+    
+    $user = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_participants WHERE user_id = %d AND challenge_id = %d", $user_id, $chal_id));
+    
+    if(!$user) {
+        print json_encode(['error' => 'Unable to find that challenge participant']);
+        wp_die();
+    }
+    
+    if(!$wpdb->update("{$wpdb->prefix}pt_challenges", ['winner' => $user_id], ['id' => $chal_id])) {
+        print json_encode(['error' => $wpdb->last_error]);
+        wp_die();
+    }
+    
+    print json_encode(['success' => "Congratulations, {$user->name}, has been marked the winner of the {$chal->name}"]);
     wp_die();
 }
