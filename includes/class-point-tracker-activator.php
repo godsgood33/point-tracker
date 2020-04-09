@@ -30,23 +30,23 @@ class Point_Tracker_Activator
      */
     public static function activate()
     {
-        if(is_null(get_option('pt-require-login', null))) {
+        if (is_null(get_option('pt-require-login', null))) {
             update_option('pt-require-login', 0);
         }
 
-        if(!remove_all_actions('save_post')) {
+        if (!remove_all_actions('save_post')) {
             wp_die("Could not remove save_post actions");
         }
-        
+
         $wp_version = get_bloginfo('version');
         $gutenberg_installed = false;
-        if(is_plugin_active('gutenberg')) {
+        if (is_plugin_active('gutenberg')) {
             $gutenberg_installed = true;
-        } elseif(version_compare($wp_version, '5.0', ">=")) {
+        } elseif (version_compare($wp_version, '5.0', ">=")) {
             $gutenberg_installed = true;
         }
-        
-        if(is_plugin_active('classic-editor')) {
+
+        if (is_plugin_active('classic-editor')) {
             $gutenberg_installed = false;
         }
 
@@ -137,7 +137,7 @@ class Point_Tracker_Activator
     public static function install_tables()
     {
         global $wpdb;
-        require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
         $query = "CREATE TABLE `{$wpdb->prefix}pt_challenges` (
     `id` int(11) NOT NULL AUTO_INCREMENT,

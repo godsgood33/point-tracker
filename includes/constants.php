@@ -40,7 +40,7 @@ If you have any questions, please e-mail <a href='mailto:{$admin_email}'>{$admin
  * @var string
  */
 define('PT_USER_DENIED', "Greetings,
-The challenge coordinator has denied your request for access to the challenge.  
+The challenge coordinator has denied your request for access to the challenge.
 Please follow up with them if you think this was done in error. <a href='mailto:{$admin_email}'>{$admin_email}</a>");
 
 /**
@@ -69,7 +69,7 @@ Challenge: {chal}");
 
 /**
  * Constant defining the email content to congratulate challenge winners
- * 
+ *
  * @var string
  */
 define('PT_WINNER', "Congratulations {name},

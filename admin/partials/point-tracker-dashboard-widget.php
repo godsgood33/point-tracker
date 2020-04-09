@@ -19,7 +19,7 @@ $challenges = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pt_challenges");
 <select id='pt-widget-challenge'>
     <option value=''>-- Select Challenge --</option>
     <?php foreach($challenges as $c) {
-        print "<option value='{$c->id}'>{$c->name}</option>"; 
+        print "<option value='{$c->id}'>{$c->name}</option>";
     }?>
 </select>
 

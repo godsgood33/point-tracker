@@ -20,10 +20,10 @@ if (! $chal_link) {
 
 if(!is_admin()) {
     $chal = Point_Tracker::init($chal_link);
-    
+
     $act_page = get_page_by_title("My Activity");
     $part = null;
-    
+
     $query = "SELECT *
     FROM {$wpdb->prefix}pt_activities
     WHERE
@@ -34,7 +34,7 @@ if(!is_admin()) {
     $chal->desc = nl2br(html_entity_decode(stripcslashes($chal->desc), ENT_QUOTES | ENT_HTML5));
     $groups = [];
     $grouped_activities = [];
-    
+
     if (! $chal->activities) {
         wp_die("There are no activities in this challenge");
     }
@@ -47,16 +47,16 @@ if(!is_admin()) {
         `group` != ''";
         $groups = $wpdb->get_results($wpdb->prepare($query, $chal->id));
     }
-    
+
     $part = null;
     if (is_user_logged_in()) {
         $query = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_participants WHERE user_id = %d AND challenge_id = %d", get_current_user_id(), $chal->id);
         $part = $wpdb->get_row($query);
     }
-    
+
     if($chal->winner) {
         $winner = $wpdb->get_var($wpdb->prepare("SELECT name FROM {$wpdb->prefix}pt_participants WHERE challenge_id = %d AND user_id = %d", $chal->id, $chal->winner));
-        
+
         print "<div id='winner'>{$winner} is the winner!</div>";
     } else {
 ?>
@@ -89,7 +89,7 @@ if(!is_admin()) {
             foreach($chal->activities as $a) {
                 $grouped_activities["{$a->group}"][] = $a;
             }
-        
+
             foreach ($grouped_activities as $k => $g) {
                 print "<h2>{$k}</h2>";
                 foreach($g as $act) {

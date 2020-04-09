@@ -4,8 +4,8 @@ Contributors: godsgood33
 Tags: team activities, challenge, content
 Requires at least: 4.4.2
 Requires PHP: 5.6
-Tested up to: 5.0.2
-Stable tag: 1.7
+Tested up to: 5.4
+Stable tag: 1.8
 License: Apache-2.0
 License URI: https://www.apache.org/licenses/LICENSE-2.0
 
@@ -28,7 +28,7 @@ This section describes how to install the plugin and get it working.
 7. Navigate to the Point Tracker -> Activities admin menu
 8. Select the challenge you just created from the drop down
 9. Fill out the boxes and create your first activity for that challenge and click "Save"
-10. Send the link to whomever you wish so they can join 
+10. Send the link to whomever you wish so they can join
 11. Under Settings -> Point Tracker there are global options that you can enable, right now, it is only requiring an account for those wanting to participate in a challenge
 
 == Frequently Asked Questions ==

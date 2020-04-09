@@ -221,7 +221,7 @@ class Point_Tracker
         $now = new DateTime("now", new DateTimeZone(get_option('timezone_string')));
         $list_page = get_page_by_title("Challenge List");
 
-        if($list && !$chal_link) {
+        if ($list && !$chal_link) {
             return null;
         }
 
@@ -264,7 +264,7 @@ class Point_Tracker
             ]);
         }
 
-        if(is_user_logged_in() && !$list) {
+        if (is_user_logged_in() && !$list) {
             if (! Point_Tracker::is_user_in_challenge($chal->id, get_current_user_id()) && $chal->approval) {
                 print "<script type='text/javascript'>document.location.href = '{$list_page->guid}?chal={$chal_link}';</script>";
             } elseif (! Point_Tracker::is_participant_approved($chal->id, get_current_user_id()) && $chal->approval) {

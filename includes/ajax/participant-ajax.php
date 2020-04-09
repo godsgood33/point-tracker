@@ -56,8 +56,8 @@ GROUP BY al.user_id";
                 "<i class='fas fa-trophy' title='Mark participant as winner' data-user-id='{$part->user_id}'></i>",
             'winner' => ($chal->winner == $part->user_id ? true : false)
         ];
-        
-        if($chal->winner == $part->user_id) {
+
+        if ($chal->winner == $part->user_id) {
             $winner_idx = $x;
         }
     }
@@ -133,7 +133,7 @@ function pt_approve_participant()
 
     if ($res) {
         $email = $wpdb->get_var($wpdb->prepare("SELECT email FROM {$wpdb->prefix}pt_participants WHERE user_id = %d AND challenge_id = %d", $user_id, $chal_id));
-        if($email) {
+        if ($email) {
             wp_mail($email, 'Approved for Team Challenge', PT_USER_APPROVED);
         }
 
@@ -190,7 +190,7 @@ WHERE
     ]);
 
     if ($res) {
-        if($email) {
+        if ($email) {
             wp_mail($email, 'Removed from Team Challenge', PT_USER_DENIED);
         }
 
@@ -226,7 +226,7 @@ function pt_add_participant()
 
     $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
     $chal = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_challenges WHERE id = %d", $chal_id));
-    if(!$chal) {
+    if (!$chal) {
         print json_encode([
             'error' => 'Unable to find the selected challenge'
         ]);
@@ -320,7 +320,7 @@ function pt_join_challenge()
     $query = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_challenges WHERE short_link = %s", $chal_link);
     $chal = $wpdb->get_row($query);
 
-    if(!$chal) {
+    if (!$chal) {
         print json_encode([
             'error' => 'Unable to find the selected challenge'
         ]);
@@ -378,7 +378,7 @@ function pt_clear_participants()
     $query = $wpdb->prepare("DELETE l.* FROM {$wpdb->prefix}pt_log l JOIN {$wpdb->prefix}pt_participants p ON p.user_id = l.user_id WHERE p.challenge_id = %d", $chal_id);
     $res = $wpdb->query($query);
 
-    if($res) {
+    if ($res) {
         $query = $wpdb->prepare("DELETE FROM {$wpdb->prefix}pt_participants WHERE challenge_id = %d", $chal_id);
         $res = $wpdb->query($query);
     }
@@ -393,7 +393,7 @@ function pt_clear_participants()
 
 /**
  * Function to mark a participant as the winner of a challenge
- * 
+ *
  * @global wpdb $wpdb
  */
 function pt_mark_winner()
@@ -401,26 +401,26 @@ function pt_mark_winner()
     global $wpdb;
     $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
     $user_id = filter_input(INPUT_POST, 'user-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-    
+
     $chal = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_challenges WHERE id = %d", $chal_id));
-    
-    if(!$chal) {
+
+    if (!$chal) {
         print json_encode(['error' => 'Unable to find the challenge selected']);
         wp_die();
     }
-    
+
     $user = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_participants WHERE user_id = %d AND challenge_id = %d", $user_id, $chal_id));
-    
-    if(!$user) {
+
+    if (!$user) {
         print json_encode(['error' => 'Unable to find that challenge participant']);
         wp_die();
     }
-    
-    if(!$wpdb->update("{$wpdb->prefix}pt_challenges", ['winner' => $user_id], ['id' => $chal_id])) {
+
+    if (!$wpdb->update("{$wpdb->prefix}pt_challenges", ['winner' => $user_id], ['id' => $chal_id])) {
         print json_encode(['error' => $wpdb->last_error]);
         wp_die();
     }
-    
+
     print json_encode(['success' => "Congratulations, {$user->name}, has been marked the winner of the {$chal->name}"]);
     wp_die();
 }

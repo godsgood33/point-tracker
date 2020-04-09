@@ -30,7 +30,7 @@ class Point_Tracker_Deactivator
      */
     public static function deactivate()
     {
-        if(!remove_all_actions('save_post')) {
+        if (!remove_all_actions('save_post')) {
             wp_die("Could not remove save_post actions");
         }
 

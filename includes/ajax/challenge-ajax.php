@@ -43,7 +43,7 @@ function pt_get_challenge()
     $chal->desc = html_entity_decode(stripcslashes($chal->desc), ENT_QUOTES | ENT_HTML5);
     $chal->act_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(1) FROM {$wpdb->prefix}pt_activities WHERE challenge_id=%d", $chal_id));
     $chal->part_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(1) FROM {$wpdb->prefix}pt_participants WHERE challenge_id=%d", $chal_id));
-    
+
     if(is_numeric($chal->winner)) {
         $chal->winner = $wpdb->get_var($wpdb->prepare("SELECT name FROM {$wpdb->prefix}pt_participants WHERE challenge_id = %d AND user_id = %d", $chal_id, $chal->winner));
     }
@@ -205,12 +205,12 @@ function pt_get_widget_data()
         'regexp' => "/participants|challenge|log|activities/"
     ], 'flags' => FILTER_NULL_ON_FAILURE]);
     $data = null;
-    
+
     $date_format = get_option('date_format', 'Y-m-d');
 
     if($type == 'challenge') {
         $chal = get_page_by_title("Challenge");
-        
+
         $query = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_challenges WHERE id = %d", $chal_id);
         $rows = $wpdb->get_row($query);
         $start_date = new DateTime($rows->start);
@@ -219,14 +219,14 @@ function pt_get_widget_data()
         $data->chal_url = $chal->guid;
         $data->start = $start_date->format($date_format);
         $data->end = $end_date->format($date_format);
-        
+
         $query = $wpdb->prepare("SELECT COUNT(1) FROM {$wpdb->prefix}pt_participants WHERE challenge_id = %d", $chal_id);
         $data->p_count = $wpdb->get_var($query);
-        
+
         $wpdb->query("SET @challenge_id = $chal_id");
         $query = "SELECT SUM(`total_points`) FROM {$wpdb->prefix}leader_board";
         $data->total_points = $wpdb->get_var($query);
-        
+
         $wpdb->query("SET @challenge_id = $chal_id");
         $query = "SELECT participant_name, total_points FROM {$wpdb->prefix}leader_board ORDER BY total_points DESC LIMIT 1";
         $row = $wpdb->get_row($query);
@@ -261,7 +261,7 @@ function pt_get_widget_data()
     elseif($type == 'participants') {
         $query = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_participants WHERE challenge_id = %d ORDER BY `name`", $chal_id);
         $rows = $wpdb->get_results($query);
-        
+
         if(is_array($rows) && count($rows) && isset($rows[0])) {
             foreach($rows as $row) {
                 $wpdb->query("SET @challenge_id = $chal_id");
@@ -295,31 +295,31 @@ function pt_get_widget_data()
 
 /**
  * Function to remove a existing challenge winner
- * 
+ *
  * @global wpdb $wpdb
  */
 function pt_remove_winner()
 {
     global $wpdb;
-    
+
     if(!current_user_can('manage_options')) {
         print json_encode(['error' => 'Access denied']);
         wp_die();
     }
-    
+
     $chal_id = filter_input(INPUT_POST, 'chal-id', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
     $chal = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}pt_challenges WHERE id = %d", $chal_id));
-    
+
     if(!$chal) {
         print json_encode(['error' => 'Could not find the selected challenge']);
         wp_die();
     }
-    
+
     if(!$wpdb->update("{$wpdb->prefix}pt_challenges", ['winner' => null], ['id' => $chal_id])) {
         print json_encode(['error' => $wpdb->last_error]);
         wp_die();
     }
-    
+
     print json_encode(['success' => 'Successfully removed the winner']);
     wp_die();
 }

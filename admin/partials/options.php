@@ -11,7 +11,7 @@ if($action == 'Save Settings') {
 		print "Unable to verify permissions";
 		wp_die();
 	}
-	
+
     $req_login = (boolean) filter_input(INPUT_POST, 'require-login', FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     update_option('pt-require-login', ($req_login ? 1 : 0));
 

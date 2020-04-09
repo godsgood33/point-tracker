@@ -232,10 +232,10 @@ class Point_Tracker_Admin
      */
     public function point_tracker_log_help()
     {}
-    
+
     /**
      * Method to print the contextual help for the upgrade page
-     * 
+     *
      * @since 1.5
      */
     public function point_tracker_upgrade_help()
@@ -268,7 +268,7 @@ class Point_Tracker_Admin
      * Function to return the equivelant date formatting string
      *
      * @since 1.3
-     *       
+     *
      * @return string
      */
     public function php_to_js_date($php_format)
