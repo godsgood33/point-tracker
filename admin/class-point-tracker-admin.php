@@ -1,5 +1,7 @@
 <?php
 
+namespace PointTracker;
+
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -20,7 +22,7 @@
  * @subpackage Point_Tracker/admin
  * @author Ryan Prather <godsgood33@gmail.com>
  */
-class Point_Tracker_Admin
+class PointTrackerAdmin
 {
 
     /**
@@ -61,7 +63,7 @@ class Point_Tracker_Admin
      *
      * @since 1.0.0
      */
-    public function enqueue_styles()
+    public function enqueueStyles()
     {
 
         /**
@@ -75,14 +77,38 @@ class Point_Tracker_Admin
          * between the defined hooks and the functions defined in this
          * class.
          */
-        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . "css/point-tracker-admin.min.css", [], $this->version, 'all');
+        wp_enqueue_style(
+            $this->plugin_name,
+            plugin_dir_url(__FILE__) . "css/point-tracker-admin.min.css",
+            [],
+            $this->version,
+            'all'
+        );
 
-        wp_enqueue_style('ui-datepicker-css', plugin_dir_url(__DIR__) . "includes/jquery-ui-1.12.1/jquery-ui.min.css", [], $this->version, 'all');
+        wp_enqueue_style(
+            'ui-datepicker-css',
+            plugin_dir_url(__DIR__) . "includes/jquery-ui-1.12.1/jquery-ui.min.css",
+            [],
+            $this->version,
+            'all'
+        );
 
-        wp_enqueue_style('datatables', plugin_dir_url(__DIR__) . "includes/datatables/DataTables-1.10.9/css/jquery.dataTables.min.css");
-        wp_enqueue_style('dt-buttons', plugin_dir_url(__DIR__) . "includes/datatables/Buttons-1.0.3/css/buttons.dataTables.min.css");
+        wp_enqueue_style(
+            'datatables',
+            plugin_dir_url(__DIR__) . "includes/datatables/DataTables-1.10.9/css/jquery.dataTables.min.css"
+        );
+        wp_enqueue_style(
+            'dt-buttons',
+            plugin_dir_url(__DIR__) . "includes/datatables/Buttons-1.0.3/css/buttons.dataTables.min.css"
+        );
 
-        wp_enqueue_style('font-awesome', plugin_dir_url(__DIR__) . "includes/font-awesome/font-awesome-v5.2.0.min.css", [], $this->version, 'all');
+        wp_enqueue_style(
+            'font-awesome',
+            plugin_dir_url(__DIR__) . "includes/font-awesome/font-awesome-v5.2.0.min.css",
+            [],
+            $this->version,
+            'all'
+        );
     }
 
     /**
@@ -90,7 +116,7 @@ class Point_Tracker_Admin
      *
      * @since 1.0.0
      */
-    public function enqueue_scripts()
+    public function enqueueScripts()
     {
 
         /**
@@ -104,12 +130,22 @@ class Point_Tracker_Admin
          * between the defined hooks and the functions defined in this
          * class.
          */
-        wp_enqueue_script("{$this->plugin_name}-admin-core", plugin_dir_url(__FILE__) . "js/point-tracker-admin.min.js", [
-            'jquery'
-        ], $this->version, false);
-        wp_localize_script("{$this->plugin_name}-admin-core", 'my_object', [
-            'date_format' => $this->php_to_js_date(get_option('date_format'))
-        ]);
+        wp_enqueue_script(
+            "{$this->plugin_name}-admin-core",
+            plugin_dir_url(__FILE__) . "js/point-tracker-admin.min.js",
+            [
+                'jquery'
+            ],
+            $this->version,
+            false
+        );
+        wp_localize_script(
+            "{$this->plugin_name}-admin-core",
+            'my_object',
+            [
+                'date_format' => $this->phpToJsDate(get_option('date_format'))
+            ]
+        );
 
         wp_enqueue_script('jquery-ui-core');
         wp_enqueue_script('jquery-ui-datepicker');
@@ -117,18 +153,54 @@ class Point_Tracker_Admin
         wp_enqueue_script('jquery-ui-dialog');
         wp_enqueue_script('jquery-ui-autocomplete');
 
-        wp_enqueue_script('spinner', plugin_dir_url(__DIR__) . 'includes/spin/spin.min.js', [], $this->version, false);
+        wp_enqueue_script(
+            'spinner',
+            plugin_dir_url(__DIR__) . 'includes/spin/spin.min.js',
+            [],
+            $this->version,
+            false
+        );
 
-        wp_enqueue_script('datatables', plugin_dir_url(__DIR__) . "includes/datatables/DataTables-1.10.9/js/jquery.dataTables.min.js");
-        wp_enqueue_script('dt-jszip', plugin_dir_url(__DIR__) . "includes/jszip/jszip.min.js");
-        wp_enqueue_script('dt-pdfmake1', plugin_dir_url(__DIR__) . "includes/datatables/pdfmake-0.1.18/build/pdfmake.min.js");
-        wp_enqueue_script('dt-pdfmake2', plugin_dir_url(__DIR__) . "includes/datatables/pdfmake-0.1.18/build/vfs_fonts.js");
-        wp_enqueue_script('dt-buttons', plugin_dir_url(__DIR__) . "includes/datatables/Buttons-1.0.3/js/dataTables.buttons.min.js");
-        wp_enqueue_script('dt-buttons-html5', plugin_dir_url(__DIR__) . "includes/datatables/Buttons-1.0.3/js/buttons.html5.min.js");
-        wp_enqueue_script('dt-buttons-print', plugin_dir_url(__DIR__) . "includes/datatables/Buttons-1.0.3/js/buttons.print.min.js");
-        wp_enqueue_script('dt-responsive', plugin_dir_url(__DIR__) . "includes/datatables/Responsive-1.0.7/js/dataTables.responsive.min.js");
-        wp_enqueue_script('dt-scroller', plugin_dir_url(__DIR__) . "includes/datatables/Scroller-1.3.0/js/dataTables.scroller.min.js");
-        wp_enqueue_script('dt-select', plugin_dir_url(__DIR__) . "includes/datatables/Select-1.0.1/js/dataTables.select.min.js");
+        wp_enqueue_script(
+            'datatables',
+            plugin_dir_url(__DIR__) . "includes/datatables/DataTables-1.10.9/js/jquery.dataTables.min.js"
+        );
+        wp_enqueue_script(
+            'dt-jszip',
+            plugin_dir_url(__DIR__) . "includes/jszip/jszip.min.js"
+        );
+        wp_enqueue_script(
+            'dt-pdfmake1',
+            plugin_dir_url(__DIR__) . "includes/datatables/pdfmake-0.1.18/build/pdfmake.min.js"
+        );
+        wp_enqueue_script(
+            'dt-pdfmake2',
+            plugin_dir_url(__DIR__) . "includes/datatables/pdfmake-0.1.18/build/vfs_fonts.js"
+        );
+        wp_enqueue_script(
+            'dt-buttons',
+            plugin_dir_url(__DIR__) . "includes/datatables/Buttons-1.0.3/js/dataTables.buttons.min.js"
+        );
+        wp_enqueue_script(
+            'dt-buttons-html5',
+            plugin_dir_url(__DIR__) . "includes/datatables/Buttons-1.0.3/js/buttons.html5.min.js"
+        );
+        wp_enqueue_script(
+            'dt-buttons-print',
+            plugin_dir_url(__DIR__) . "includes/datatables/Buttons-1.0.3/js/buttons.print.min.js"
+        );
+        wp_enqueue_script(
+            'dt-responsive',
+            plugin_dir_url(__DIR__) . "includes/datatables/Responsive-1.0.7/js/dataTables.responsive.min.js"
+        );
+        wp_enqueue_script(
+            'dt-scroller',
+            plugin_dir_url(__DIR__) . "includes/datatables/Scroller-1.3.0/js/dataTables.scroller.min.js"
+        );
+        wp_enqueue_script(
+            'dt-select',
+            plugin_dir_url(__DIR__) . "includes/datatables/Select-1.0.1/js/dataTables.select.min.js"
+        );
     }
 
     /**
@@ -136,42 +208,91 @@ class Point_Tracker_Admin
      *
      * @since 1.0.0
      */
-    public function add_plugin_admin_menu()
+    public function addPluginAdminMenu()
     {
-        add_menu_page('Point Tracker', 'Point Tracker', 'manage_options', 'point-tracker-menu', [
-            $this,
-            'display_core_menu_page'
-        ], 'dashicons-admin-generic', 2);
+        add_menu_page(
+            'Point Tracker',
+            'Point Tracker',
+            'manage_options',
+            'point-tracker-menu',
+            [
+                $this,
+                'displayCoreMenuPage'
+            ],
+            'dashicons-admin-generic',
+            2
+        );
 
-        add_submenu_page('point-tracker-menu', 'Challenges', 'Challenges', 'manage_options', 'point-tracker-menu', [
-            $this,
-            'display_core_menu_page'
-        ]);
+        add_submenu_page(
+            'point-tracker-menu',
+            'Challenges',
+            'Challenges',
+            'manage_options',
+            'point-tracker-menu',
+            [
+                $this,
+                'displayCoreMenuPage'
+            ]
+        );
 
-        add_submenu_page('point-tracker-menu', 'Activities', 'Activities', 'manage_options', 'point-tracker-activities', [
-            $this,
-            'display_activity_submenu_page'
-        ]);
+        add_submenu_page(
+            'point-tracker-menu',
+            'Activities',
+            'Activities',
+            'manage_options',
+            'point-tracker-activities',
+            [
+                $this,
+                'displayActivitySubmenuPage'
+            ]
+        );
 
-        add_submenu_page('point-tracker-menu', 'Participants', 'Participants', 'manage_options', 'point-tracker-participants', [
-            $this,
-            'display_participant_submenu_page'
-        ]);
+        add_submenu_page(
+            'point-tracker-menu',
+            'Participants',
+            'Participants',
+            'manage_options',
+            'point-tracker-participants',
+            [
+                $this,
+                'displayParticipantSubmenuPage'
+            ]
+        );
 
-        add_submenu_page('point-tracker-menu', 'Participant Log', 'Log', 'manage_options', 'point-tracker-participant-log', [
-            $this,
-            'display_participant_log_submenu_page'
-        ]);
+        add_submenu_page(
+            'point-tracker-menu',
+            'Participant Log',
+            'Log',
+            'manage_options',
+            'point-tracker-participant-log',
+            [
+                $this,
+                'displayParticipantLobSubmenuPage'
+            ]
+        );
 
-        add_submenu_page('point-tracker-menu', 'Upgrade!', 'Upgrade!', 'manage_options', 'point-tracker-upgrade', [
-            $this,
-            'display_upgrade_page'
-        ]);
+        add_submenu_page(
+            'point-tracker-menu',
+            'Upgrade!',
+            'Upgrade!',
+            'manage_options',
+            'point-tracker-upgrade',
+            [
+                $this,
+                'displayUpgradePage'
+            ]
+        );
 
-        add_options_page("Point Tracker Settings", "PT Settings", "manage_options", "pt-settings", [
-            $this,
-            "display_admin_options_page"
-        ]);
+        add_options_page(
+            "Point Tracker Settings",
+            "PT Settings",
+            "manage_options",
+            "pt-settings",
+            [
+                $this,
+                "displayAdminOptionsPage"
+            ]
+        );
     }
 
     /**
@@ -179,7 +300,7 @@ class Point_Tracker_Admin
      *
      * @since 1.5
      */
-    public function add_help()
+    public function addHelp()
     {
         $s = get_current_screen();
         $match = [];
@@ -195,7 +316,7 @@ class Point_Tracker_Admin
                 ]
             ]);
 
-            // $s->set_help_sidebar('Test');
+        // $s->set_help_sidebar('Test');
         } else {
             $s->remove_help_tab('point-tracker-help');
         }
@@ -205,52 +326,57 @@ class Point_Tracker_Admin
      * Method to print the contextual help for the challenge page
      *
      * @since 1.5
-     */
     public function point_tracker_menu_help()
-    {}
+    {
+    }
+     */
 
     /**
      * Method to print the contextual help for the activities page
      *
      * @since 1.5
-     */
     public function point_tracker_activities_help()
-    {}
+    {
+    }
+     */
 
     /**
      * Method to print the contextual help for the participants page
      *
      * @since 1.5
-     */
     public function point_tracker_participants_help()
-    {}
+    {
+    }
+     */
 
     /**
      * Method to print the contextual help for the log page
      *
      * @since 1.5
-     */
     public function point_tracker_log_help()
-    {}
+    {
+    }
+     */
 
     /**
      * Method to print the contextual help for the upgrade page
      *
      * @since 1.5
-     */
     public function point_tracker_upgrade_help()
-    {}
+    {
+    }
+     */
 
     /**
      * Function to add the dashboard widget code
      *
      * @since 1.5
      */
-    public function add_dashboard_widget()
+    public function addDashboardWidget()
     {
         wp_add_dashboard_widget('pt-dashboard-widget', 'Point Tracker', [
             $this,
-            'dashboard_widget_handler'
+            'dashboardWidgetHandler'
         ]);
     }
 
@@ -259,9 +385,11 @@ class Point_Tracker_Admin
      *
      * @since 1.5
      */
-    public function dashboard_widget_handler()
+    public function dashboardWidgetHandler()
     {
-        include_once ('partials/point-tracker-dashboard-widget.php');
+        include_once(
+            'partials/point-tracker-dashboard-widget.php'
+        );
     }
 
     /**
@@ -271,7 +399,7 @@ class Point_Tracker_Admin
      *
      * @return string
      */
-    public function php_to_js_date($php_format)
+    public function phpToJsDate($php_format)
     {
         // most common date formats listed in WordPress admin
         $arr = [
@@ -289,9 +417,9 @@ class Point_Tracker_Admin
      *
      * @since 1.0.0
      */
-    public function display_core_menu_page()
+    public function displayCoreMenuPage()
     {
-        include_once ('partials/point-tracker-main-pg.php');
+        include_once('partials/point-tracker-main-pg.php');
     }
 
     /**
@@ -299,9 +427,9 @@ class Point_Tracker_Admin
      *
      * @since 1.0
      */
-    public function display_activity_submenu_page()
+    public function displayActivitySubmenuPage()
     {
-        include_once ('partials/point-tracker-activity-pg.php');
+        include_once('partials/point-tracker-activity-pg.php');
     }
 
     /**
@@ -309,9 +437,9 @@ class Point_Tracker_Admin
      *
      * @since 1.0
      */
-    public function display_participant_submenu_page()
+    public function displayParticipantSubmenuPage()
     {
-        include_once ('partials/point-tracker-participant-pg.php');
+        include_once('partials/point-tracker-participant-pg.php');
     }
 
     /**
@@ -319,9 +447,9 @@ class Point_Tracker_Admin
      *
      * @since 1.0
      */
-    public function display_participant_log_submenu_page()
+    public function displayParticipantLobSubmenuPage()
     {
-        include_once ('partials/point-tracker-log-pg.php');
+        include_once('partials/point-tracker-log-pg.php');
     }
 
     /**
@@ -329,18 +457,24 @@ class Point_Tracker_Admin
      *
      * @since 1.4
      */
-    public function display_upgrade_page()
+    public function displayUpgradePage()
     {
         print <<<EOL
 <h2>Upgrade to Point Tracker Pro</h2>
-<p><a href='https://wppointtracker.com/point-tracker-pro' target='_blank'>Point Tracker Pro</a> is the next level of challenge tracking.  It includes functionality like:</p>
+<p>
+    <a href='https://wppointtracker.com/point-tracker-pro' target='_blank'>Point Tracker Pro</a>
+     is the next level of challenge tracking.  It includes functionality like:
+</p>
 
 <ul>
     <li>Leader Lists &mdash; for grouping people which allows you to create multiple challenge winners</li>
-    <li>Public Leader Boards &mdash; create a public leader board that is available to all your participants so they can see where they rank in the challenge</li>
-    <li>Activity Backdating &mdash; allow participants to log an activity on a different date than the one they are actually logging it on</li>
+    <li>Public Leader Boards &mdash; create a public leader board that is available to all your participants
+        so they can see where they rank in the challenge</li>
+    <li>Activity Backdating &mdash; allow participants to log an activity on a different date than the one 
+        they are actually logging it on</li>
     <li>Activity Start/End Dates &mdash; allow participants to log an activity only during a specific date range</li>
-    <li>Participant Upload &mdash; upload a file to automatically create all of your participants and add them to the challenge</li>
+    <li>Participant Upload &mdash; upload a file to automatically create all of your participants and add them
+        to the challenge</li>
     <li>Random Name Drawing &mdash; Randomly select a name from the filterable list of potential winners</li>
 </ul>
 EOL;
@@ -351,8 +485,8 @@ EOL;
      *
      * @since 1.0
      */
-    public function display_admin_options_page()
+    public function displayAdminOptionsPage()
     {
-        include_once ('partials/options.php');
+        include_once('partials/options.php');
     }
 }

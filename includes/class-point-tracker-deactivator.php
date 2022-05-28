@@ -1,5 +1,7 @@
 <?php
 
+namespace PointTracker;
+
 /**
  * Fired during plugin deactivation
  *
@@ -20,7 +22,7 @@
  * @subpackage Point_Tracker/includes
  * @author Ryan Prather <godsgood33@gmail.com>
  */
-class Point_Tracker_Deactivator
+class PointTrackerDeactivator
 {
 
     /**

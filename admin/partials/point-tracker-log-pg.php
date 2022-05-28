@@ -7,8 +7,8 @@
 
 global $wpdb;
 
-if(!current_user_can('manage_options')) {
-  wp_die('You do not have permissions to do this', "You Dirty Rat!", array('response' => 301));
+if (!current_user_can('manage_options')) {
+    wp_die('You do not have permissions to do this', "You Dirty Rat!", array('response' => 301));
 }
 
 $query = "SELECT * FROM {$wpdb->prefix}pt_challenges";
@@ -23,30 +23,31 @@ $challenges = $wpdb->get_results($query) or [];
 
 Challenge Name:
 <select id='participant-log'>
-	<option value=''>-- Select Challenge --</option>
-<?php
-foreach($challenges as $chal) {
-    $name = html_entity_decode($chal->name, ENT_QUOTES | ENT_HTML5);
-    print "<option value='{$chal->id}'>{$name}</option>";
-}
-?>
+    <option value=''>-- Select Challenge --</option>
+    <?php
+    foreach ($challenges as $chal) {
+        $name = html_entity_decode($chal->name, ENT_QUOTES | ENT_HTML5);
+        print "<option value='{$chal->id}'>{$name}</option>";
+    }
+    ?>
 </select>
 <br />
 
 <!-- <a href='javascript:void(0);' id='add-activity-link'>Add Activity</a><br /> -->
 <div id='add-participant-activity'>
-  <input type='hidden' id='activity-type' />
-  Activity: <select id='participant-activity'>
-    <option value=''>-- Select Activity --</option>
-  </select><br />
+    <input type='hidden' id='activity-type' />
+    Activity: <select id='participant-activity'>
+        <option value=''>-- Select Activity --</option>
+    </select><br />
 
-  <input type='date' id='log-date' placeholder='Date...' />&nbsp;&nbsp;
-  <input type='time' id='log-time' placeholder='Time...' /><br />
+    <input type='date' id='log-date' placeholder='Date...' />&nbsp;&nbsp;
+    <input type='time' id='log-time' placeholder='Time...' /><br />
 
-  <div id='activity-answer'></div>
+    <div id='activity-answer'></div>
 
-  <input type='button' id='save-participant-activity' value='Save' />
+    <input type='button' id='save-participant-activity' value='Save' />
 </div>
 
-<input type='hidden' id='_wpnonce' value='<?php print wp_create_nonce('pt-delete-entry'); ?>' />
+<input type='hidden' id='_wpnonce'
+    value='<?php print wp_create_nonce('pt-delete-entry'); ?>' />
 <table id='participant-log-table'></table>

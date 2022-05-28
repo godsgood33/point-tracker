@@ -1,5 +1,5 @@
 <?php
-if(!current_user_can('manage_options')) {
+if (!current_user_can('manage_options')) {
     wp_die("You are not allowed to access this page");
 }
 
@@ -18,7 +18,8 @@ $challenges = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pt_challenges");
 
 <select id='pt-widget-challenge'>
     <option value=''>-- Select Challenge --</option>
-    <?php foreach($challenges as $c) {
+    <?php
+    foreach ($challenges as $c) {
         print "<option value='{$c->id}'>{$c->name}</option>";
     }?>
 </select>

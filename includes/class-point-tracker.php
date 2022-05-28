@@ -1,5 +1,7 @@
 <?php
 
+namespace PointTracker;
+
 /**
  * The file that defines the core plugin class
  *
@@ -12,6 +14,14 @@
  * @package    Point_Tracker
  * @subpackage Point_Tracker/includes
  */
+
+use DateTime;
+use DateTimeZone;
+use PointTracker\PointTrackerAdmin;
+use PointTracker\PointTrackerPublic;
+use PointTracker\ChallengeAjax;
+use PointTracker\EntryAjax;
+use PointTracker\ParticipantAjax;
 
 /**
  * The core plugin class.
@@ -27,7 +37,7 @@
  * @subpackage Point_Tracker/includes
  * @author Ryan Prather <godsgood33@gmail.com>
  */
-class Point_Tracker
+class PointTracker
 {
 
     /**
@@ -36,18 +46,18 @@ class Point_Tracker
      *
      * @since 1.0.0
      * @access protected
-     * @var Point_Tracker_Loader $loader Maintains and registers all hooks for the plugin.
+     * @var PointTrackerLoader $loader Maintains and registers all hooks for the plugin.
      */
-    protected $loader;
+    protected PointTrackerLoader $loader;
 
     /**
      * The unique identifier of this plugin.
      *
      * @since 1.0.0
      * @access protected
-     * @var string $plugin_name The string used to uniquely identify this plugin.
+     * @var string $pluginName The string used to uniquely identify this plugin.
      */
-    protected $plugin_name;
+    protected string $pluginName;
 
     /**
      * The current version of the plugin.
@@ -74,12 +84,12 @@ class Point_Tracker
         } else {
             $this->version = '1.7';
         }
-        $this->plugin_name = 'point-tracker';
+        $this->pluginName = 'point-tracker';
 
-        $this->load_dependencies();
-        $this->set_locale();
-        $this->define_admin_hooks();
-        $this->define_public_hooks();
+        $this->loadDependencies();
+        $this->setLocale();
+        $this->defineAdminHooks();
+        $this->definePublicHooks();
     }
 
     /**
@@ -89,7 +99,7 @@ class Point_Tracker
      *
      * - Point_Tracker_Loader. Orchestrates the hooks of the plugin.
      * - Point_Tracker_i18n. Defines internationalization functionality.
-     * - Point_Tracker_Admin. Defines all hooks for the admin area.
+     * - PointTrackerAdmin. Defines all hooks for the admin area.
      * - Point_Tracker_Public. Defines all hooks for the public side of the site.
      *
      * Create an instance of the loader which will be used to register the hooks
@@ -98,7 +108,7 @@ class Point_Tracker
      * @since 1.0.0
      * @access private
      */
-    private function load_dependencies()
+    private function loadDependencies()
     {
 
         /**
@@ -137,11 +147,7 @@ class Point_Tracker
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/ajax/participant-ajax.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/ajax/entry-ajax.php';
 
-        /**
-         *
-         * @var Point_Tracker $loader
-         */
-        $this->loader = new Point_Tracker_Loader();
+        $this->loader = new PointTrackerLoader();
     }
 
     /**
@@ -153,11 +159,11 @@ class Point_Tracker
      * @since 1.0.0
      * @access private
      */
-    private function set_locale()
+    private function setLocale()
     {
-        $plugin_i18n = new Point_Tracker_i18n();
+        $plugin_i18n = new PointTrackeri18n();
 
-        $this->loader->add_action('plugins_loaded', $plugin_i18n, 'load_plugin_textdomain');
+        $this->loader->addAction('plugins_loaded', $plugin_i18n, 'loadPluginTextdomain');
     }
 
     /**
@@ -167,16 +173,48 @@ class Point_Tracker
      * @since 1.0.0
      * @access private
      */
-    private function define_admin_hooks()
+    private function defineAdminHooks()
     {
-        $plugin_admin = new Point_Tracker_Admin($this->get_plugin_name(), $this->get_version());
+        $plugin_admin = new PointTrackerAdmin($this->getPluginName(), $this->getVersion());
 
-        $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
-        $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
+        $this->loader->addAction('admin_enqueue_scripts', $plugin_admin, 'enqueueStyles');
+        $this->loader->addAction('admin_enqueue_scripts', $plugin_admin, 'enqueueScripts');
 
-        $this->loader->add_action('admin_menu', $plugin_admin, 'add_plugin_admin_menu');
-        //$this->loader->add_action('admin_head', $plugin_admin, 'add_help');
-        $this->loader->add_action('wp_dashboard_setup', $plugin_admin, 'add_dashboard_widget');
+        $this->loader->addAction('admin_menu', $plugin_admin, 'addPluginAdminMenu');
+        //$this->loader->addAction('admin_head', $plugin_admin, 'addHelp');
+        $this->loader->addAction('wp_dashboard_setup', $plugin_admin, 'addDashboardWidget');
+
+        // Challenge Ajax
+        $this->loader->addAction('wp_ajax_get-challenge', ChallengeAjax::class, 'getChallenge');
+        $this->loader->addAction('wp_ajax_save-challenge', ChallengeAjax::class, 'saveChallenge');
+        $this->loader->addAction('wp_ajax_delete-challenge', ChallengeAjax::class, 'deleteChallenge');
+        $this->loader->addAction('wp_ajax_pt-get-widget-data', ChallengeAjax::class, 'getWidgetData');
+        $this->loader->addAction('wp_ajax_remove-winner', ChallengeAjax::class, 'removeWinner');
+
+        // Activity Ajax
+        $this->loader->addAction('wp_ajax_get-activities', ActivityAjax::class, 'getActivityTable');
+        $this->loader->addAction('wp_ajax_get-activity-details', ActivityAjax::class, 'getActivityDetails');
+        $this->loader->addAction('wp_ajax_save-activity', ActivityAjax::class, 'saveActivity');
+        $this->loader->addAction('wp_ajax_delete-activity', ActivityAjax::class, 'deleteActivity');
+        $this->loader->addAction('wp_ajax_ac-group', ActivityAjax::class, 'groupActivity');
+
+        // Participant Ajax
+        $this->loader->addAction('wp_ajax_get-participants', ParticipantAjax::class, 'getParticipantTable');
+        $this->loader->addAction('wp_ajax_approve-participant', ParticipantAjax::class, 'approveParticipant');
+        $this->loader->addAction('wp_ajax_remove-participant', ParticipantAjax::class, 'removeParticipant');
+        $this->loader->addAction('wp_ajax_add-participant', ParticipantAjax::class, 'addParticipant');
+        $this->loader->addAction('wp_ajax_join-challenge', ParticipantAjax::class, 'joinChallenge');
+        $this->loader->addAction('wp_ajax_clear-participants', ParticipantAjax::class, 'clearParticipants');
+        $this->loader->addAction('wp_ajax_mark-winner', ParticipantAjax::class, 'markWinner');
+
+        // Entry ajax
+        $this->loader->addAction('wp_ajax_get-log', EntryAjax::class, 'getLogTable');
+        $this->loader->addAction('wp_ajax_save-entry', EntryAjax::class, 'participantSaveEntry');
+        $this->loader->addAction(
+            'wp_ajax_delete-participant-activity',
+            EntryAjax::class,
+            'deleteParticipantActivity'
+        );
     }
 
     /**
@@ -186,12 +224,21 @@ class Point_Tracker
      * @since 1.0.0
      * @access private
      */
-    private function define_public_hooks()
+    private function definePublicHooks()
     {
-        $plugin_public = new Point_Tracker_Public($this->get_plugin_name(), $this->get_version());
+        $plugin_public = new PointTrackerPublic($this->getPluginName(), $this->getVersion());
 
-        $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
-        $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
+        $this->loader->addAction('wp_enqueue_scripts', $plugin_public, 'enqueueStyles');
+        $this->loader->addAction('wp_enqueue_scripts', $plugin_public, 'enqueueScripts');
+
+        // public ajax requests
+        $this->loader->addAction('wp_ajax_nopriv_save-entry', EntryAjax::class, 'participantSaveEntry');
+        $this->loader->addAction('wp_ajax_nopriv_get-my-activity', EntryAjax::class, 'getMyActivityTable');
+        $this->loader->addAction(
+            'wp_ajax_nopriv_delete-participant-activity',
+            EntryAjax::class,
+            'deleteParticipantActivity'
+        );
     }
 
     /**
@@ -255,19 +302,23 @@ class Point_Tracker
         }
 
         if ($req_login && ! is_user_logged_in()) {
-            wp_die("Web site settings required that you <a href='" . wp_login_url() . "'>login</a> to participate in a challenge", "ACCOUNT_REQUIRED", [
+            wp_die("Web site settings required that you <a href='".wp_login_url().
+                "'>login</a> to participate in a challenge", "ACCOUNT_REQUIRED", [
                 'response' => 301
             ]);
         } elseif ($chal->approval && ! is_user_logged_in()) {
-            wp_die("Challenge requires approval so you must <a href='" . wp_login_url() . "'>login</a> on this website", "ACCOUNT_REQUIRED", [
+            wp_die("Challenge requires approval so you must <a href='".wp_login_url().
+                "'>login</a> on this website", "ACCOUNT_REQUIRED", [
                 'response' => 301
             ]);
         }
 
         if (is_user_logged_in() && !$list) {
-            if (! Point_Tracker::is_user_in_challenge($chal->id, get_current_user_id()) && $chal->approval) {
-                print "<script type='text/javascript'>document.location.href = '{$list_page->guid}?chal={$chal_link}';</script>";
-            } elseif (! Point_Tracker::is_participant_approved($chal->id, get_current_user_id()) && $chal->approval) {
+            if (! PointTracker::isUserInChallenge($chal->id, get_current_user_id()) && $chal->approval) {
+                print "<script type='text/javascript'>".
+                    "document.location.href = '{$list_page->guid}?chal={$chal_link}';".
+                "</script>";
+            } elseif (! PointTracker::isParticipantApproved($chal->id, get_current_user_id()) && $chal->approval) {
                 wp_die("You have not been approved to access this challenge yet", "You shall not pass!", [
                     'response' => 301
                 ]);
@@ -282,7 +333,7 @@ class Point_Tracker
      *
      * @param stdClass $chal
      */
-    public static function join_challenge(&$chal)
+    public static function joinChallenge(&$chal)
     {
         $desc = stripcslashes(nl2br($chal->desc));
         print <<<EOL
@@ -299,9 +350,9 @@ EOL;
      * @since 1.0.0
      * @return string The name of the plugin.
      */
-    public function get_plugin_name()
+    public function getPluginName()
     {
-        return $this->plugin_name;
+        return $this->pluginName;
     }
 
     /**
@@ -310,7 +361,7 @@ EOL;
      * @since 1.0.0
      * @return Point_Tracker_Loader Orchestrates the hooks of the plugin.
      */
-    public function get_loader()
+    public function getLoader()
     {
         return $this->loader;
     }
@@ -321,7 +372,7 @@ EOL;
      * @since 1.0.0
      * @return string The version number of the plugin.
      */
-    public function get_version()
+    public function getVersion()
     {
         return $this->version;
     }
@@ -336,7 +387,7 @@ EOL;
      *
      * @return boolean
      */
-    public static function is_user_in_challenge($challenge_id, $user_id)
+    public static function isUserInChallenge($challenge_id, $user_id)
     {
         global $wpdb;
 
@@ -359,7 +410,7 @@ WHERE " . (is_numeric($challenge_id) ? "c.id = %d" : "c.short_link = %s") . " AN
      *
      * @return boolean
      */
-    public static function is_participant_approved($chal_id, $user_id)
+    public static function isParticipantApproved($chal_id, $user_id)
     {
         global $wpdb;
 

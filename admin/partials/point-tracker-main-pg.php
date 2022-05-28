@@ -32,7 +32,7 @@ $challenges = $wpdb->get_results($query) or [];
 <h2>Point Tracker</h2>
 <div id='msg'></div>
 <input type='hidden' id='_wpnonce'
-	value='<?php print wp_create_nonce('pt-delete-challenge'); ?>' />
+    value='<?php print wp_create_nonce('pt-delete-challenge'); ?>' />
 <input type='button' id='save-challenge' value='Save' />&nbsp;&nbsp;
 <input type='button' id='delete-challenge' value='Delete' />&nbsp;&nbsp;
 <input type='button' id='remove-winner' value='Remove Winner' />
@@ -40,43 +40,41 @@ $challenges = $wpdb->get_results($query) or [];
 <br />
 Challenge Name:
 <select id='challenge'>
-	<option value=''>-- Select Challenge --</option>
-<?php
-foreach($challenges as $chal) {
-    $name = html_entity_decode($chal->name, ENT_QUOTES | ENT_HTML5);
-    print "<option value='{$chal->id}'>{$name}</option>";
-}
-?>
+    <option value=''>-- Select Challenge --</option>
+    <?php
+    foreach ($challenges as $chal) {
+        $name = html_entity_decode($chal->name, ENT_QUOTES | ENT_HTML5);
+        print "<option value='{$chal->id}'>{$name}</option>";
+    }
+    ?>
 </select>
 
 <div id='winner'></div>
 
 <br />
 <div>
-	<input type='text' id='name' class='tooltip-field'
-		placeholder='Name...' title='A name for this challenge' />
+    <input type='text' id='name' class='tooltip-field' placeholder='Name...' title='A name for this challenge' />
 </div>
 <div>
-	<input type='text' id='start-date' placeholder='Start Date...'
-		class='tooltip-field' title='Start date for the challenge' />
+    <input type='text' id='start-date' placeholder='Start Date...' class='tooltip-field'
+        title='Start date for the challenge' />
 </div>
 <div>
-	<input type='text' id='end-date' placeholder='End Date...'
-		class='tooltip-field' title='End date for the challenge' />
+    <input type='text' id='end-date' placeholder='End Date...' class='tooltip-field'
+        title='End date for the challenge' />
 </div>
-<div class='tooltip-field'
-        title='Do you want to approve requests to join the challenge (requires account)'>
-	<input type='checkbox' id='approval' />
+<div class='tooltip-field' title='Do you want to approve requests to join the challenge (requires account)'>
+    <input type='checkbox' id='approval' />
     <label for='approval'>Approval Required?</label>
 </div>
 <div>
-	Link:&nbsp;&nbsp; <span id='link' class='tooltip-field'
-		title='Link to the challenge. Copy/paste this when you are ready for people to start joining.'></span>
+    Link:&nbsp;&nbsp; <span id='link' class='tooltip-field'
+        title='Link to the challenge. Copy/paste this when you are ready for people to start joining.'></span>
 </div>
 <div>
-	Description: <br />
-	<textarea id='desc' rows='5' cols='100' class='tooltip-field'
-		title='A long description for what the challenge seeks to accomplish, and what, if any, prize will be rewarded'></textarea>
+    Description: <br />
+    <textarea id='desc' rows='5' cols='100' class='tooltip-field'
+        title='A long description for what the challenge seeks to accomplish, and what, if any, prize will be rewarded'></textarea>
 </div>
 
 <br />

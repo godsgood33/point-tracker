@@ -1,5 +1,7 @@
 <?php
 
+namespace PointTracker;
+
 /**
  * Fired during plugin activation
  *
@@ -20,7 +22,7 @@
  * @subpackage Point_Tracker/includes
  * @author Ryan Prather <godsgood33@gmail.com>
  */
-class Point_Tracker_Activator
+class PointTrackerActivator
 {
 
     /**
@@ -36,6 +38,10 @@ class Point_Tracker_Activator
 
         if (!remove_all_actions('save_post')) {
             wp_die("Could not remove save_post actions");
+        }
+
+        if (!get_option('timezone_string', null)) {
+            wp_die('Please set your timezone in Settings -> General');
         }
 
         $wp_version = get_bloginfo('version');
@@ -134,7 +140,7 @@ class Point_Tracker_Activator
      *
      * @since 1.0.0
      */
-    public static function install_tables()
+    public static function installTables()
     {
         global $wpdb;
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -222,7 +228,7 @@ class Point_Tracker_Activator
      *
      * @since 1.0.0
      */
-    public static function create_views()
+    public static function createViews()
     {
         global $wpdb;
 
@@ -350,7 +356,7 @@ GROUP BY `ca`.`id` , `al`.`user_id` , `al`.`log_date`)";
      *
      * @since 1.0.0
      */
-    public static function install_functions()
+    public static function installFunctions()
     {
         global $wpdb;
 

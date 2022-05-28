@@ -25,6 +25,10 @@
  * Domain Path:       /languages
  */
 
+use PointTracker\PointTracker;
+use PointTracker\PointTrackerActivator;
+use PointTracker\PointTrackerDeactivator;
+
 // If this file is called directly, abort.
 if (! defined('WPINC')) {
     die();
@@ -41,25 +45,25 @@ define('PT_VERSION', '1.8');
  * The code that runs during plugin activation.
  * This action is documented in includes/class-point-tracker-activator.php
  */
-function activate_point_tracker()
+function activatePointTracker()
 {
     require_once plugin_dir_path(__FILE__) . 'includes/class-point-tracker-activator.php';
 
-    Point_Tracker_Activator::activate();
-    Point_Tracker_Activator::install_tables();
-    Point_Tracker_Activator::install_functions();
-    Point_Tracker_Activator::create_views();
+    PointTrackerActivator::activate();
+    PointTrackerActivator::installTables();
+    PointTrackerActivator::installFunctions();
+    PointTrackerActivator::createViews();
 }
 
 /**
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-point-tracker-deactivator.php
  */
-function deactivate_point_tracker()
+function deactivatePointTracker()
 {
     require_once plugin_dir_path(__FILE__) . 'includes/class-point-tracker-deactivator.php';
 
-    Point_Tracker_Deactivator::deactivate();
+    PointTrackerDeactivator::deactivate();
 }
 
 register_activation_hook(__FILE__, 'activate_point_tracker');
@@ -80,9 +84,9 @@ require plugin_dir_path(__FILE__) . 'includes/class-point-tracker.php';
  *
  * @since 1.0.0
  */
-function run_point_tracker()
+function runPointTracker()
 {
-    $plugin = new Point_Tracker();
+    $plugin = new PointTracker();
     $plugin->run();
 }
-run_point_tracker();
+runPointTracker();
